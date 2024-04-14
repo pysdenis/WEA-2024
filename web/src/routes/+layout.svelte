@@ -3,7 +3,7 @@
 	import logo from "$lib/assets/images/logo.png";
 
 	let pageTitle = "Random Page";
-	let pageContent = "This is a randomly generated page.";
+	let pageContent = "This is a test page.";
 </script>
 
 <main class="container mx-auto">
