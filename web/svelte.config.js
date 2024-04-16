@@ -1,11 +1,11 @@
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import sveltePreprocess from "svelte-preprocess";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import sveltePreprocess from 'svelte-preprocess';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const postcssConfig = join(__dirname, "postcss.config.js"); // https://stackoverflow.com/a/77137441
+const postcssConfig = join(__dirname, 'postcss.config.js'); // https://stackoverflow.com/a/77137441
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -13,24 +13,24 @@ const config = {
 		vitePreprocess(),
 		sveltePreprocess({
 			postcss: {
-				configFilePath: postcssConfig,
-			},
-		}),
+				configFilePath: postcssConfig
+			}
+		})
 	],
 	kit: {
 		adapter: adapter({
-			fallback: "index.html",
-			pages: ".build/temp",
+			fallback: 'index.html',
+			pages: '.build/temp'
 		})
 	},
 	onwarn: (warning, handler) => {
 		const { code } = warning;
-		if (code === "css-unused-selector") {
+		if (code === 'css-unused-selector') {
 			return;
 		}
 
 		handler?.(warning);
-	},
+	}
 };
 
 export default config;

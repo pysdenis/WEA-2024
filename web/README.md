@@ -6,7 +6,7 @@ Everything you need to build a Svelte project, powered by [`create-svelte`](http
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
-````bash
+```bash
 # if youre running the app for the first time
 npm install
 
@@ -15,9 +15,12 @@ npm run dev
 # or start the server and open the app in a new browser tab
 npm run dev -- --open
 
+# before commiting changes run
+npx prettier . --write
+
 # for running script
 npm run script_name
-````
+```
 
 ## Building
 

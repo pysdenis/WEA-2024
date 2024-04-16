@@ -9,13 +9,13 @@ export default defineConfig(() => {
 			imagetools({
 				defaultDirectives: (url) => {
 					const searchParams = new URLSearchParams(url.searchParams);
-					if (searchParams.has("webp")) {
-						searchParams.append("format", "webp");
+					if (searchParams.has('webp')) {
+						searchParams.append('format', 'webp');
 					}
 					return searchParams;
-				},
+				}
 			}),
-			sveltekit(),
-		],
+			sveltekit()
+		]
 	};
 });
