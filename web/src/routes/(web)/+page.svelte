@@ -1,2 +1,21 @@
-<h1 class="font-poppins">home</h1>
-<h1>home</h1>
+<script lang="ts">
+import { onMount } from 'svelte';
+import { fetchData, type Article } from '$lib/api/api';
+
+let articles:Article[] = [];
+
+onMount(async () => {
+	const response = await fetchData('data');
+	articles = response as unknown as Article[];
+});
+</script>
+
+<h1>Articles</h1>
+
+{#each articles as article}
+	<article>
+		<h2>{article.id}</h2>
+		<p>{article.title}</p>
+		<p>{article.content}</p>
+	</article>
+{/each}

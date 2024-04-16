@@ -19,3 +19,10 @@ export async function postData(
 	});
 	return await response.json();
 }
+
+//test
+export interface Article {
+	id: number;
+	title: string;
+	content: string;
+}

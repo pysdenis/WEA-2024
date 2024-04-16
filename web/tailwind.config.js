@@ -34,14 +34,15 @@ export default {
 				poppins: ["'Poppins'", 'sans-serif']
 			},
 			colors: {
+				// TODO: add better color palette
 				primary: {
-					DEFAULT: '9381ff'
+					DEFAULT: '#9381ff'
 				},
 				secondary: {
-					DEFAULT: 'f8f7ff'
+					DEFAULT: '#f8f7ff'
 				},
 				accent: {
-					DEFAULT: 'b8b8ff'
+					DEFAULT: '#b8b8ff'
 				},
 				text: {
 					DEFAULT: '#001219'
