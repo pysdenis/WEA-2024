@@ -14,3 +14,6 @@
 <main class="container">
 	<slot />
 </main>
+<footer class="flex items-center justify-center bg-secondary">
+	<p>footer</p>
+</footer>
