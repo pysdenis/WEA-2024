@@ -1,11 +1,16 @@
-<?php //TODO upravit
-$servername = "localhost";
-$username = "uzivatelske_jmeno";
-$password = "heslo";
-$dbname = "nazev_databaze";
+<?php
+class Database {
+	private $connection;
+	private $servername = "localhost";
+	private $username = "root";
+	private $password = "";
+	private $dbname = "wea2024";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-	die("Spojení s databází selhalo: " . $conn->connect_error);
+	function getConnection() {
+		$this->connection = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
+		if ($this->connection->connect_error) {
+			die("Connection failed: " . $this->connection->connect_error);
+		}
+		return $this->connection;
+	}
 }
