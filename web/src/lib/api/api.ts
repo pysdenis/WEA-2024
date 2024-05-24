@@ -1,8 +1,12 @@
 const BASE_URL = 'http://localhost:8000'; // upravit a vymyslet, tak aby fungovalo lokálně i pak na serveru
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function fetchData(endpoint: string): Promise<Record<string, unknown>> {
-	const response = await fetch(`${BASE_URL}`); // dopsat '/api/${endpoint}' jak je níže
+	const response = await fetch(`${BASE_URL}/${endpoint}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
 	return await response.json();
 }
 

@@ -5,7 +5,7 @@ import { fetchData, type Article } from '$lib/api/api';
 let articles:Article[] = [];
 
 onMount(async () => {
-	const response = await fetchData('data');
+	const response = await fetchData('articles');
 	articles = response as unknown as Article[];
 });
 </script>
