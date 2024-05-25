@@ -13,6 +13,7 @@ include_once './Category.php';
 include_once './Author.php';
 include_once './Admin.php';
 include_once './database.php';
+
 $database = new Database();
 $db = $database->getConnection();
 
@@ -392,4 +393,3 @@ switch($path[0]) {
 		echo json_encode(array("message" => "Resource not found."));
 		break;
 }
-?>
