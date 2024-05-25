@@ -33,5 +33,5 @@ Závěrečný úkol do webovek Denis, Šimon, Vojta
 6) Čas vyhrazený pro prezentování projektu: 10 minut
 
 ## Výběr tématu a technologií
---todo--
-
+    - Backend: PHP (REST API), MySQL
+    - Frontend: Svelte, TypeScript, TailwindCSS
