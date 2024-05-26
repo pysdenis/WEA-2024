@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { fetchData, type Article } from '$lib/api/api';
+	import { fetchArticles } from '../../lib/api/fetchFromDatabase';
+	import type Article from '$lib/types/Article';
 
-	let articles:Article[] = [];
+	let articles: Article[] = [];
 
 	onMount(async () => {
-		const response = await fetchData('articles');
+		const response = await fetchArticles();
 		articles = response as unknown as Article[];
 	});
 </script>

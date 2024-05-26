@@ -1,9 +1,9 @@
 const BASE_URL = 'http://localhost:8000'; // upravit a vymyslet, tak aby fungovalo lokálně i pak na serveru
 
-export async function fetchData<T>(endpoint: string, id?: number): Promise<T> {
+export async function fetchData<T>(endpoint: string, arg?: unknown): Promise<T> {
 	let url = `${BASE_URL}/${endpoint}`;
-	if (id) {
-		url += `/${id}`;
+	if (arg) {
+		url += `/${arg}`;
 	}
 
 	const response = await fetch(url, {
@@ -17,16 +17,41 @@ export async function fetchData<T>(endpoint: string, id?: number): Promise<T> {
 	return data;
 }
 
-// export async function postData(
-// 	endpoint: string,
-// 	data: Record<string, unknown>
-// ): Promise<Record<string, unknown>> {
-// 	const response = await fetch(`${BASE_URL}/api/${endpoint}`, {
-// 		method: 'POST',
-// 		headers: {
-// 			'Content-Type': 'application/json'
-// 		},
-// 		body: JSON.stringify(data)
-// 	});
-// 	return await response.json();
-// }
+export async function postData<T>(endpoint: string, data: T): Promise<T> {
+	const response = await fetch(`${BASE_URL}/${endpoint}`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(data)
+	});
+
+	const responseData: T = await response.json();
+	return responseData;
+}
+
+export async function deleteData<T>(endpoint: string, arg: T): Promise<T> {
+	const response = await fetch(`${BASE_URL}/${endpoint}/${arg}`, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+
+	const responseData: T = await response.json();
+	return responseData;
+}
+
+export async function putData<T>(endpoint: string, data: T): Promise<T> {
+	const response = await fetch(`${BASE_URL}/${endpoint}`, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(data)
+	});
+
+	const responseData: T = await response.json();
+	return responseData;
+}
+

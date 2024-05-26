@@ -9,7 +9,7 @@
 	let categories: Category[] = [];
 
 	onMount(async () => {
-		const response = await fetchCategories('categories');
+		const response = await fetchCategories();
 		categories = response;
 	});
 </script>

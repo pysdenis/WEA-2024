@@ -388,6 +388,48 @@ switch($path[0]) {
 				break;
 		}
 		break;
+	case 'login':
+		if ($request_method === 'POST') {
+			$data = json_decode(file_get_contents("php://input"));
+			$email = htmlspecialchars(strip_tags($data->email));
+			$loginPassword = htmlspecialchars(strip_tags($data->loginPassword));
+
+			$userAdmin = new Admin($db);
+			$isValid = $userAdmin->login($email, $loginPassword);
+
+			if ($isValid) {
+				http_response_code(200);
+				echo json_encode(["message" => "Login successful", "token" => $isValid]);
+			} else {
+				http_response_code(401);
+				echo json_encode(["message" => "Invalid credentials"]);
+			}
+		} else {
+			http_response_code(405);
+			echo json_encode(["message" => "Method not allowed"]);
+		}
+		break;
+	case 'register':
+		if ($request_method === 'POST') {
+			$data = json_decode(file_get_contents("php://input"));
+			$admin->email = $data->email;
+			$admin->loginName = $data->loginName;
+			$admin->loginPassword = $data->loginPassword;
+
+			$isRegistered = $admin->register();
+
+			if ($isRegistered) {
+				http_response_code(201);
+				echo json_encode(["message" => "Registration successful"]);
+			} else {
+				http_response_code(400);
+				echo json_encode(["message" => "Registration failed"]);
+			}
+		} else {
+			http_response_code(405);
+			echo json_encode(["message" => "Method not allowed"]);
+		}
+		break;
 	default:
 		http_response_code(404);
 		echo json_encode(array("message" => "Resource not found."));
