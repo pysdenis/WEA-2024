@@ -38,7 +38,7 @@ h5 {
 }
 
 p {
-	@apply text-[0.9375rem] leading-[1.5] text-text lg:text-[1rem];
+	@apply text-[0.9375rem] leading-[1.5] lg:text-[1rem];
 }
 
 a {

@@ -6,6 +6,13 @@ export default interface Admin {
 }
 
 export interface loginData {
+	token?: string;
 	email: string;
 	loginPassword: string;
+}
+
+export interface User {
+	id: number;
+	email: string;
+	loginName: string;
 }

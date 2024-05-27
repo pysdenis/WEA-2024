@@ -4,22 +4,22 @@ import type Author from "../types/Author";
 import type Category from "../types/Category";
 import { fetchData } from "./api";
 
-export async function fetchArticles(id?: number): Promise<Article[]> {
+export async function fetchArticles(id?: number): Promise< Article | Article[]> {
 	const endpoint: string = 'articles';
-	return fetchData<Article[]>(endpoint, id);
+	return fetchData<Article | Article[]>(endpoint, id);
 }
 
-export async function fetchCategories(id?: number): Promise<Category[]> {
+export async function fetchCategories(id?: number): Promise<Category | Category[]> {
 	const endpoint: string = 'categories';
-	return fetchData<Category[]>(endpoint, id);
+	return fetchData<Category | Category[]>(endpoint, id);
 }
 
-export async function fetchAuthors(id?: number): Promise<Author[]> {
+export async function fetchAuthors(id?: number): Promise<Author | Author[]> {
 	const endpoint: string = 'authors';
-	return fetchData<Author[]>(endpoint, id);
+	return fetchData<Author | Author[]>(endpoint, id);
 }
 
-export async function fetchAdminData(id?: number): Promise<Admin[]> {
+export async function fetchAdminData(id?: number): Promise<Admin | Admin[]> {
 	const endpoint: string = 'users_admin';
-	return fetchData<Admin[]>(endpoint, id);
+	return fetchData<Admin | Admin[]>(endpoint, id);
 }

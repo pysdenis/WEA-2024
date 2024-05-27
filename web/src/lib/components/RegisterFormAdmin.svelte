@@ -1,6 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { postRegisterData } from '../api/postDataToDatabase';
+	import { postLoginData, postRegisterData } from '../api/postDataToDatabase';
+	import { passwordLowercasePattern, passwordUppercasePattern, passwordDigit } from '../regex/password';
+	import StaticPicture from "./picture/StaticPicture.svelte";
+	import logo from "$lib/assets/images/logo.png";
+	import Icon from './Icon.svelte';
+	import closed from '$lib/assets/icons/closed.svg?raw';
+	import opened from '$lib/assets/icons/opened.svg?raw';
 
 	let email = '';
 	let loginName = '';
@@ -9,6 +14,10 @@
 
 	let passwordMatch = true;
 	let showPassword = false;
+	let passwordLowercase = true;
+	let passwordUppercase = true;
+	let passwordNumber = true;
+	let emailValid = true;
 
 	async function register() {
 		if (loginPassword !== loginPasswordRepeat) {
@@ -16,56 +25,104 @@
 			return;
 		}
 
-		const response = await postRegisterData({ email, loginName, loginPassword });
-		console.log(response);
+		if (!passwordLowercasePattern.test(loginPassword)) {
+			passwordLowercase = false;
+			return;
+		}
+
+		if (!passwordUppercasePattern.test(loginPassword)) {
+			passwordUppercase = false;
+			return;
+		}
+
+		if (!passwordDigit.test(loginPassword)) {
+			passwordNumber = false;
+			return;
+		}
+
+		if (!email.includes('@')) {
+			emailValid = false;
+			return;
+		}
+
+		try {
+			if(await postRegisterData({ email, loginName, loginPassword })) {
+				const response = await postLoginData({ email, loginPassword });
+				if (response.token) {
+					localStorage.setItem('token', JSON.stringify(response.token));
+					window.location.assign('/admin');
+				} else {
+					throw new Error('No token in response');
+				}
+			}
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
-	onMount(() => {
-		// TODO: delete
-		document.body.classList.add('bg-gray-100', 'p-4');
-	});
+	function signout() {
+		localStorage.removeItem('token');
+	}
 </script>
 
-<main>
-	<h1 class="text-2xl font-bold mb-4">Register</h1>
-	{#if !passwordMatch}
-		<p class="text-red-500 mb-4">Passwords do not match</p>
-	{/if}
-	<form on:submit|preventDefault={register} class="max-w-md">
-		<div class="mb-4">
-			<label class="block mb-2" for="email">Email:</label>
-			<input type="email" id="email" class="w-full px-4 py-2 border rounded" bind:value={email} />
+<main class="flex justify-center h-[100dvh] w-[100dvw] bg-gray-200 items-center">
+	<div class="mb-12">
+		<div class="flex justify-between w-full items-center">
+			<h1 class="text-xl m-0 p-0 uppercase">Registrace</h1>
+			<StaticPicture image={logo} height={48} width={48} alt="Logo THE CAP" imgClass="h-12" />
 		</div>
-		<div class="mb-4">
-			<label class="block mb-2" for="loginName">Username:</label>
-			<input type="text" id="loginName" class="w-full px-4 py-2 border rounded" bind:value={loginName} />
-		</div>
-		<div class="mb-4">
-			<label class="block mb-2" for="loginPassword">Password:</label>
-			<div class="relative">
-				{#if !showPassword}
-					<input type="password" id="loginPassword" class="w-full px-4 py-2 border rounded" bind:value={loginPassword} />
-				{:else}
-					<input type="text" id="loginPassword" class="w-full px-4 py-2 border rounded" bind:value={loginPassword} />
-				{/if}
-				<button type="button" class="absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-500" on:click={() => showPassword = !showPassword}>
-					{showPassword ? 'Hide' : 'Show'}
-				</button>
-			</div>
-		</div>
-		<div class="mb-4">
-			<label class="block mb-2" for="loginPasswordRepeat">Repeat password:</label>
-			<div class="relative">
-				{#if !showPassword}
-					<input type="password" id="loginPasswordRepeat" class="w-full px-4 py-2 border rounded" bind:value={loginPasswordRepeat} />
-				{:else}
-					<input type="text" id="loginPasswordRepeat" class="w-full px-4 py-2 border rounded" bind:value={loginPasswordRepeat} />
-				{/if}
-				<button type="button" class="absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-500" on:click={() => showPassword = !showPassword}>
-					{showPassword ? 'Hide' : 'Show'}
-				</button>
-			</div>
-		</div>
-		<button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Register</button>
-	</form>
+		<form on:submit|preventDefault={register} class="flex flex-col md:grid grid-cols-2 gap-4">
+			<label class="flex flex-col">
+				Email
+				<input type="text" bind:value={email} class="p-2" />
+			</label>
+			<label class="flex flex-col">
+				Jméno
+				<input type="text" bind:value={loginName} class="p-2" />
+			</label>
+			<label class="flex flex-col">
+				Heslo
+				<div class="relative">
+					{#if showPassword}
+						<input type="text" bind:value={loginPassword} class="p-2" />
+					{:else}
+						<input type="password" bind:value={loginPassword} class="p-2" />
+					{/if}
+				</div>
+			</label>
+			<label class="flex flex-col">
+				Heslo znovu
+				<div class="relative">
+					{#if showPassword}
+						<input type="text" bind:value={loginPasswordRepeat} class="p-2" />
+					{:else}
+						<input type="password" bind:value={loginPasswordRepeat} class="p-2" />
+					{/if}
+					<button type="button" class="absolute top-1/2 right-2 transform -translate-y-1/2" on:click={() => showPassword = !showPassword}>
+						{#if showPassword}
+							<Icon icon={opened} class="w-4 h-4 bg-white" />
+						{:else}
+							<Icon icon={closed} class="w-4 h-4 bg-white" />
+						{/if}
+					</button>
+				</div>
+			</label>
+			<button type="submit" class="p-2 bg-black col-span-2 text-white text-xs hover:scale-105 transition-all duration-300">Registrovat se</button>
+		</form>
+		{#if !passwordMatch}
+			<p class="text-red-500 mb-4">Hesla se neshodují</p>
+		{/if}
+		{#if !passwordLowercase}
+			<p class="text-red-500 mb-4">Heslo musí obsahovat malé písmeno</p>
+		{/if}
+		{#if !passwordUppercase}
+			<p class="text-red-500 mb-4">Heslo musí obsahovat velké písmeno</p>
+		{/if}
+		{#if !passwordNumber}
+			<p class="text-red-500 mb-4">Heslo musí obsahovat číslo</p>
+		{/if}
+		{#if !emailValid}
+			<p class="text-red-500 mb-4">Email není validní</p>
+		{/if}
+	</div>
 </main>

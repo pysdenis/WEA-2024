@@ -30,7 +30,7 @@ export async function postLoginData(data: loginData): Promise<loginData> {
 	return postData<loginData>(endpoint, data);
 }
 
-export async function postRegisterData(data: Admin): Promise<loginData> {
+export async function postRegisterData(data: Admin): Promise<Admin> {
 	const endpoint: string = 'register';
-	return postData<loginData>(endpoint, data);
+	return postData<Admin>(endpoint, data);
 }

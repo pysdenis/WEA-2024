@@ -7,7 +7,7 @@
 
 	onMount(async () => {
 		const response = await fetchArticles();
-		articles = response as unknown as Article[];
+		articles = response as Article[];
 	});
 </script>
 
