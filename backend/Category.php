@@ -46,10 +46,18 @@ class Category {
 		$stmt->bindParam(":name", $this->name);
 		$stmt->bindParam(":urlSlug", $this->urlSlug);
 
-		if ($stmt->execute()) {
-			return true;
+		try {
+			if ($stmt->execute()) {
+				http_response_code(201);
+				echo json_encode(["message" => "Category was created", "ok" => 1]);
+			} else {
+				http_response_code(500);
+				echo json_encode(["message" => "Unable to create category"]);
+			}
+		} catch (Exception $e) {
+			http_response_code(500);
+			echo json_encode(["message" => $e->getMessage()]);
 		}
-		return false;
 	}
 
 	public function update() {

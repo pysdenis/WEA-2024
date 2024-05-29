@@ -6,6 +6,10 @@
 	import Icon from './Icon.svelte';
 	import closed from '$lib/assets/icons/closed.svg?raw';
 	import opened from '$lib/assets/icons/opened.svg?raw';
+	import Logger from './Logger.svelte';
+
+	let showLogger = false;
+	let loggerMsg: string | unknown;
 
 	let email = '';
 	let loginName = '';
@@ -46,22 +50,18 @@
 		}
 
 		try {
-			if(await postRegisterData({ email, loginName, loginPassword })) {
-				const response = await postLoginData({ email, loginPassword });
-				if (response.token) {
-					localStorage.setItem('token', JSON.stringify(response.token));
-					window.location.assign('/admin');
-				} else {
-					throw new Error('No token in response');
-				}
+			const response = await postRegisterData({ email, loginName, loginPassword });
+			if (response.token) {
+				localStorage.setItem('token', JSON.stringify(response.token));
+				window.location.assign('/admin');
+			} else {
+				showLogger = true;
+				loggerMsg = JSON.stringify(response.message);
 			}
 		} catch (error) {
-			console.error(error);
+			showLogger = true;
+			loggerMsg = error;
 		}
-	}
-
-	function signout() {
-		localStorage.removeItem('token');
 	}
 </script>
 
@@ -125,4 +125,7 @@
 			<p class="text-red-500 mb-4">Email není validní</p>
 		{/if}
 	</div>
+	{#if showLogger}
+		<Logger message={loggerMsg} on:close={() => showLogger = false} />
+	{/if}
 </main>

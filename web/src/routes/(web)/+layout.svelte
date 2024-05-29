@@ -20,7 +20,9 @@
 	</a>
 	<nav class="text-white">
 		{#each categories as category}
-			<a href="/{category.id}" class="px-3 py-2 rounded-md">{category.name}</a>
+			{#if category.inMenu}
+				<a href="/{category.id}" class="px-3 py-2 rounded-md">{category.name}</a>
+			{/if}
 		{/each}
 	</nav>
 </header>

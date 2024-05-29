@@ -1,5 +1,5 @@
-export default interface Aurhor {
-	id: number;
+export default interface Author {
+	id?: number;
     firstName: string;
     lastName: string;
     email: string;

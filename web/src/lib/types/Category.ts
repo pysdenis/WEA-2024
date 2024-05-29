@@ -1,7 +1,9 @@
 export default interface Category {
-	id: number;
+	ok?: boolean;
+	message?: string;
+	id?: number;
 	content: string;
-	image: string;
+	image: string | null;
 	inMenu: boolean;
 	name: string;
 	urlSlug: string;

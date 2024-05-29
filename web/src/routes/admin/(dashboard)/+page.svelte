@@ -3,6 +3,7 @@
 </script>
 
 {#if $adminStore}
-	<h1>Dashboard</h1>
-	<p>Welcome, {$adminStore.loginName}!</p>
+	<h1>Přehled</h1>
+	<p>Vítej {$adminStore.loginName}!</p>
+	<!-- TODO: mby nějaké stats pokud zbyde čas -->
 {/if}

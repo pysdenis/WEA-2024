@@ -1,4 +1,5 @@
 <?php
+// TODO: upravit aby se vypisovali vsude messages v metodach a ne tady
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -173,13 +174,7 @@ switch($path[0]) {
 				$category->inMenu = $data->inMenu;
 				$category->name = $data->name;
 				$category->urlSlug = $data->urlSlug;
-				if ($category->create()) {
-					http_response_code(201);
-					echo json_encode(array("message" => "Category was created."));
-				} else {
-					http_response_code(503);
-					echo json_encode(array("message" => "Unable to create category."));
-				}
+				$category->create();
 				break;
 			case 'PUT':
 				$data = json_decode(file_get_contents("php://input"));
@@ -416,15 +411,7 @@ switch($path[0]) {
 			$admin->loginName = $data->loginName;
 			$admin->loginPassword = $data->loginPassword;
 
-			$isRegistered = $admin->register();
-
-			if ($isRegistered) {
-				http_response_code(201);
-				echo json_encode(["message" => "Registration successful"]);
-			} else {
-				http_response_code(400);
-				echo json_encode(["message" => "Registration failed"]);
-			}
+			$admin->register();
 		} else {
 			http_response_code(405);
 			echo json_encode(["message" => "Method not allowed"]);

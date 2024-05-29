@@ -30,18 +30,6 @@ export async function postData<T>(endpoint: string, data: T): Promise<T> {
 	return responseData;
 }
 
-export async function deleteData<T>(endpoint: string, arg: T): Promise<T> {
-	const response = await fetch(`${BASE_URL}/${endpoint}/${arg}`, {
-		method: 'DELETE',
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	});
-
-	const responseData: T = await response.json();
-	return responseData;
-}
-
 export async function putData<T>(endpoint: string, data: T): Promise<T> {
 	const response = await fetch(`${BASE_URL}/${endpoint}`, {
 		method: 'PUT',
@@ -55,3 +43,14 @@ export async function putData<T>(endpoint: string, data: T): Promise<T> {
 	return responseData;
 }
 
+export async function deleteData<T>(endpoint: string, arg: unknown): Promise<T> {
+	const response = await fetch(`${BASE_URL}/${endpoint}/${arg}`, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+
+	const responseData: T = await response.json();
+	return responseData;
+}

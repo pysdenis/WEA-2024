@@ -22,7 +22,6 @@ class Admin {
 			$row = $stmt->fetch(PDO::FETCH_ASSOC);
 			if (hash('sha256', $loginPassword) == $row['loginPassword']){
 				$token = array(
-					"id" => $row['id'],
 					"email" => $row['email'],
 					"loginName" => $row['loginName']
 				);
@@ -33,6 +32,17 @@ class Admin {
 	}
 
 	public function register() {
+		$query = "SELECT * FROM " . $this->table_name . " WHERE email = ?";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bindParam(1, $this->email);
+		$stmt->execute();
+
+		if ($stmt->rowCount() > 0) {
+			http_response_code(400);
+			echo json_encode(array("message" => "Email already exists."));
+			return;
+		}
+
 		$query = "INSERT INTO " . $this->table_name . " SET email=:email, loginName=:loginName, loginPassword=:loginPassword";
 		$stmt = $this->conn->prepare($query);
 
@@ -44,10 +54,18 @@ class Admin {
 		$stmt->bindParam(":loginName", $this->loginName);
 		$stmt->bindParam(":loginPassword", $this->loginPassword);
 
+		$token = array(
+			"email" => $this->email,
+			"loginName" => $this->loginName
+		);
+
 		if ($stmt->execute()) {
-			return true;
+			http_response_code(201);
+			echo json_encode(["message" => "User was created", "token" => $token]);
+		} else {
+			http_response_code(500);
+			echo json_encode(array("message" => "Unable to create user."));
 		}
-		return false;
 	}
 
 	public function read() {

@@ -35,7 +35,7 @@ export default {
 			colors: {
 				// TODO: add better color palette
 				primary: {
-					DEFAULT: '#9381ff'
+					DEFAULT: '#1e293b'
 				},
 				secondary: {
 					DEFAULT: '#f8f7ff'
