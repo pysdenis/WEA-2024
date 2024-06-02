@@ -25,6 +25,8 @@ jobs:
       - name: Build
         working-directory: web
         run: npm run build
+        env:
+          VITE_API_URL: ${{ vars.API_URL }}
 
       - name: Upload to helkor
         uses: that-richan/helkor-upload@v1.0.5
