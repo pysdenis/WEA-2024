@@ -53,7 +53,8 @@ CREATE TABLE `authors` (
   `email` varchar(200) NOT NULL,
   `phoneNumber` varchar(15) NOT NULL,
   `content` text NOT NULL,
-  `image` varchar(300) NOT NULL
+  `image` varchar(300) NOT NULL,
+  `urlSlug` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------

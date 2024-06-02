@@ -46,6 +46,12 @@ class Article {
 		$query = "INSERT INTO " . $this->table_name . " SET title=:title, createdAt=:createdAt, publishedAt=:publishedAt, categoryId=:categoryId, authorId=:authorId, image=:image, content=:content, perex=:perex, urlSlug=:urlSlug";
 		$stmt = $this->conn->prepare($query);
 
+		if (empty($this->title) || empty($this->content) || empty($this->perex) || empty($this->urlSlug)) {
+			http_response_code(400);
+			echo json_encode(["message" => "Unable to create article. Data is incomplete."]);
+			return;
+		}
+
 		$this->title = htmlspecialchars(strip_tags($this->title));
 
 		$stmt->bindParam(":title", $this->title);
@@ -58,15 +64,29 @@ class Article {
 		$stmt->bindParam(":perex", $this->perex);
 		$stmt->bindParam(":urlSlug", $this->urlSlug);
 
-		if ($stmt->execute()) {
-			return true;
+		try {
+			if ($stmt->execute()) {
+				http_response_code(201);
+				echo json_encode(["message" => "Article was created", "ok" => 1]);
+			} else {
+				http_response_code(500);
+				echo json_encode(["message" => "Unable to create article"]);
+			}
+		} catch (Exception $e) {
+			http_response_code(500);
+			echo json_encode(["message" => "Unable to create article", "error" => $e->getMessage()]);
 		}
-		return false;
 	}
 
 	public function update() {
 		$query = "UPDATE " . $this->table_name . " SET title = :title, createdAt = :createdAt, publishedAt = :publishedAt, categoryId = :categoryId, authorId = :authorId, image = :image, content = :content, perex = :perex, urlSlug = :urlSlug WHERE id = :id";
 		$stmt = $this->conn->prepare($query);
+
+		if (empty($this->title) || empty($this->content) || empty($this->perex) || empty($this->urlSlug)) {
+			http_response_code(400);
+			echo json_encode(["message" => "Unable to update article. Data is incomplete."]);
+			return;
+		}
 
 		$this->title = htmlspecialchars(strip_tags($this->title));
 
@@ -81,10 +101,18 @@ class Article {
 		$stmt->bindParam(":perex", $this->perex);
 		$stmt->bindParam(":urlSlug", $this->urlSlug);
 
-		if ($stmt->execute()) {
-			return true;
+		try {
+			if ($stmt->execute()) {
+				http_response_code(200);
+				echo json_encode(["message" => "Article was updated", "ok" => 1]);
+			} else {
+				http_response_code(500);
+				echo json_encode(["message" => "Unable to update article"]);
+			}
+		} catch (Exception $e) {
+			http_response_code(500);
+			echo json_encode(["message" => "Unable to update article", "error" => $e->getMessage()]);
 		}
-		return false;
 	}
 
 	public function delete() {

@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8000';
+export const BASE_URL = 'http://localhost:8000';
 
 export async function fetchData<T>(endpoint: string, arg?: unknown): Promise<T> {
 	let url = `${BASE_URL}/${endpoint}`;

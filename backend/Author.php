@@ -10,6 +10,7 @@ class Author {
 	public $phoneNumber;
 	public $content;
 	public $image;
+	public $urlSlug;
 
 	public function __construct($db) {
 		$this->conn = $db;
@@ -34,11 +35,18 @@ class Author {
 		$this->phoneNumber = $row['phoneNumber'];
 		$this->content = $row['content'];
 		$this->image = $row['image'];
+		$this->urlSlug = $row['urlSlug'];
 	}
 
 	public function create() {
-		$query = "INSERT INTO " . $this->table_name . " SET firstName=:firstName, lastName=:lastName, email=:email, phoneNumber=:phoneNumber, content=:content, image=:image";
+		$query = "INSERT INTO " . $this->table_name . " SET firstName=:firstName, lastName=:lastName, email=:email, phoneNumber=:phoneNumber, content=:content, image=:image, urlSlug=:urlSlug";
 		$stmt = $this->conn->prepare($query);
+
+		if (empty($this->firstName) || empty($this->lastName) || empty($this->email) || empty($this->phoneNumber) || empty($this->content) || empty($this->urlSlug)) {
+			http_response_code(400);
+			echo json_encode(["message" => "Unable to create author. Data is incomplete."]);
+			return;
+		}
 
 		$this->firstName = htmlspecialchars(strip_tags($this->firstName));
 		$this->lastName = htmlspecialchars(strip_tags($this->lastName));
@@ -51,16 +59,31 @@ class Author {
 		$stmt->bindParam(":phoneNumber", $this->phoneNumber);
 		$stmt->bindParam(":content", $this->content);
 		$stmt->bindParam(":image", $this->image);
+		$stmt->bindParam(":urlSlug", $this->urlSlug);
 
-		if ($stmt->execute()) {
-			return true;
+		try {
+			if ($stmt->execute()) {
+				http_response_code(201);
+				echo json_encode(["message" => "Author was created", "ok" => 1]);
+			} else {
+				http_response_code(500);
+				echo json_encode(["message" => "Unable to create author"]);
+			}
+		} catch (Exception $e) {
+			http_response_code(500);
+			echo json_encode(["message" => $e->getMessage()]);
 		}
-		return false;
 	}
 
 	public function update() {
-		$query = "UPDATE " . $this->table_name . " SET firstName=:firstName, lastName=:lastName, email=:email, phoneNumber=:phoneNumber, content=:content, image=:image WHERE id=:id";
+		$query = "UPDATE " . $this->table_name . " SET firstName=:firstName, lastName=:lastName, email=:email, phoneNumber=:phoneNumber, content=:content, image=:image, urlSlug=:urlSlug WHERE id=:id";
 		$stmt = $this->conn->prepare($query);
+
+		if (empty($this->firstName) || empty($this->lastName) || empty($this->email) || empty($this->phoneNumber) || empty($this->content) || empty($this->urlSlug)) {
+			http_response_code(400);
+			echo json_encode(["message" => "Unable to update author. Data is incomplete."]);
+			return;
+		}
 
 		$this->id = htmlspecialchars(strip_tags($this->id));
 		$this->firstName = htmlspecialchars(strip_tags($this->firstName));
@@ -75,11 +98,20 @@ class Author {
 		$stmt->bindParam(":phoneNumber", $this->phoneNumber);
 		$stmt->bindParam(":content", $this->content);
 		$stmt->bindParam(":image", $this->image);
+		$stmt->bindParam(":urlSlug", $this->urlSlug);
 
-		if ($stmt->execute()) {
-			return true;
+		try {
+			if ($stmt->execute()) {
+				http_response_code(200);
+				echo json_encode(["message" => "Author was updated", "ok" => 1]);
+			} else {
+				http_response_code(500);
+				echo json_encode(["message" => "Unable to update author"]);
+			}
+		} catch (Exception $e) {
+			http_response_code(500);
+			echo json_encode(["message" => $e->getMessage()]);
 		}
-		return false;
 	}
 
 	public function delete() {

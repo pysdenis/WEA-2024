@@ -85,13 +85,7 @@ switch($path[0]) {
 				$article->content = $data->content;
 				$article->perex = $data->perex;
 				$article->urlSlug = $data->urlSlug;
-				if ($article->create()) {
-					http_response_code(201);
-					echo json_encode(array("message" => "Article was created."));
-				} else {
-					http_response_code(503);
-					echo json_encode(array("message" => "Unable to create article."));
-				}
+				$article->create();
 				break;
 			case 'PUT':
 				$data = json_decode(file_get_contents("php://input"));
@@ -105,13 +99,7 @@ switch($path[0]) {
 				$article->content = $data->content;
 				$article->perex = $data->perex;
 				$article->urlSlug = $data->urlSlug;
-				if ($article->update()) {
-					http_response_code(200);
-					echo json_encode(array("message" => "Article was updated."));
-				} else {
-					http_response_code(503);
-					echo json_encode(array("message" => "Unable to update article."));
-				}
+				$article->update();
 				break;
 			case 'DELETE':
 				if (isset($path[1])) {
@@ -184,13 +172,7 @@ switch($path[0]) {
 				$category->inMenu = $data->inMenu;
 				$category->name = $data->name;
 				$category->urlSlug = $data->urlSlug;
-				if ($category->update()) {
-					http_response_code(200);
-					echo json_encode(array("message" => "Category was updated."));
-				} else {
-					http_response_code(503);
-					echo json_encode(array("message" => "Unable to update category."));
-				}
+				$category->update();
 				break;
 			case 'DELETE':
 				if (isset($path[1])) {
@@ -226,7 +208,8 @@ switch($path[0]) {
 						"email" => $author->email,
 						"phoneNumber" => $author->phoneNumber,
 						"content" => $author->content,
-						"image" => $author->image
+						"image" => $author->image,
+						"urlSlug" => $author->urlSlug
 					);
 					echo json_encode($author_item);
 				} else {
@@ -241,7 +224,8 @@ switch($path[0]) {
 							"email" => $email,
 							"phoneNumber" => $phoneNumber,
 							"content" => $content,
-							"image" => $image
+							"image" => $image,
+							"urlSlug" => $urlSlug
 						);
 						array_push($authors_arr, $author_item);
 					}
@@ -256,14 +240,9 @@ switch($path[0]) {
 				$author->phoneNumber = $data->phoneNumber;
 				$author->content = $data->content;
 				$author->image = $data->image;
+				$author->urlSlug = $data->urlSlug;
 
-				if ($author->create()) {
-					http_response_code(201);
-					echo json_encode(array("message" => "Author was created."));
-				} else {
-					http_response_code(503);
-					echo json_encode(array("message" => "Unable to create author."));
-				}
+				$author->create();
 				break;
 			case 'PUT':
 				$data = json_decode(file_get_contents("php://input"));
@@ -274,14 +253,9 @@ switch($path[0]) {
 				$author->phoneNumber = $data->phoneNumber;
 				$author->content = $data->content;
 				$author->image = $data->image;
+				$author->urlSlug = $data->urlSlug;
 
-				if ($author->update()) {
-					http_response_code(200);
-					echo json_encode(array("message" => "Author was updated."));
-				} else {
-					http_response_code(503);
-					echo json_encode(array("message" => "Unable to update author."));
-				}
+				$author->update();
 				break;
 			case 'DELETE':
 				if (isset($path[1])) {
@@ -415,6 +389,45 @@ switch($path[0]) {
 		} else {
 			http_response_code(405);
 			echo json_encode(["message" => "Method not allowed"]);
+		}
+		break;
+	case 'upload-image':
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+				$fileTmpPath = $_FILES['image']['tmp_name'];
+				$fileName = $_FILES['image']['name'];
+				$fileSize = $_FILES['image']['size'];
+				$fileType = $_FILES['image']['type'];
+				$fileNameCmps = explode(".", $fileName);
+				$fileExtension = strtolower(end($fileNameCmps));
+
+				$allowedfileExtensions = array('jpg', 'gif', 'png', 'webp');
+				if (in_array($fileExtension, $allowedfileExtensions)) {
+					$uploadFileDir = './upload_images/';
+					$dest_path = $uploadFileDir . $fileName;
+
+					if (move_uploaded_file($fileTmpPath, $dest_path)) {
+						$response = array("url" => '/upload_images/' . $fileName);
+						echo json_encode($response);
+						http_response_code(200);
+					} else {
+						$response = array("message" => "There was an error moving the uploaded file.");
+						echo json_encode($response);
+						http_response_code(500);
+					}
+				} else {
+					$response = array("message" => "Upload failed. Allowed file types: " . implode(',', $allowedfileExtensions));
+					echo json_encode($response);
+					http_response_code(400);
+				}
+			} else {
+				$response = array("message" => "No file uploaded or there was an upload error.");
+				echo json_encode($response);
+				http_response_code(400);
+			}
+		} else {
+			http_response_code(405);
+			echo json_encode(array("message" => "Method not allowed."));
 		}
 		break;
 	default:

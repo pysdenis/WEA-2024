@@ -1,51 +1,58 @@
 <script lang="ts">
-	import type Category from "$lib/types/Category";
 	import Icon from "$lib/components/Icon.svelte";
 	import cross from "$lib/assets/icons/cross.svg?raw";
-	import { putCategory } from "$lib/api/putDataToDatabase";
+	import { putAuthor } from "$lib/api/putDataToDatabase";
 	import Modal from "$lib/components/Modal.svelte";
 	import Logger from "$lib/components/Logger.svelte";
-	import { deleteCategory } from "$lib/api/deleteFromDatabase";
+	import { deleteAuthor } from "$lib/api/deleteFromDatabase";
 	import deleteIcon from "$lib/assets/icons/delete.svg?raw";
 	import { uploadImage } from "$lib/api/uploadImage";
 	import { BASE_URL } from "$lib/api/api";
 	import arrow from "$lib/assets/icons/arrow.svg?raw";
+	import type Author from "$lib/types/Author";
 
-	export let data: { category: Category };
+	export let data: { author: Author };
 
 	let showLogger = false;
 	let loggerMsg: string | unknown;
 	let showModal = false;
 	let type: 'success' | 'error';
-	let selectedCategory: Category | null = null;
+	let selectedAuthor: Author | null = null;
 
-	let category: Category = data.category;
+	let author: Author = data.author;
 
-	async function saveCategory() {
-		if (category.name === "") {
+	async function saveAuthor() {
+		if (author.firstName === "") {
 			showLogger = true;
-			loggerMsg = "Název kategorie nesmí být prázdný.";
+			loggerMsg = "Jméno nesmí být prázdné.";
 			type = 'error';
 			return;
 		}
 
-		if (category.name.length > 25) {
+		if (author.lastName === "") {
 			showLogger = true;
-			loggerMsg = "Název kategorie nesmí být delší než 25 znaků.";
+			loggerMsg = "Příjmení nesmí být prázdné.";
+			type = 'error';
+			return;
+		}
+
+		if (author.email === "") {
+			showLogger = true;
+			loggerMsg = "Email nesmí být prázdný.";
 			type = 'error';
 			return;
 		}
 
 		try {
-			const response = await putCategory(category);
+			const response = await putAuthor(author);
 			if (response.ok) {
 				showLogger = true;
-				loggerMsg = "Kategorie byla úspěšně uložena.";
+				loggerMsg = "Autor byla úspěšně uložena.";
 				type = 'success';
-				setTimeout(() => window.location.assign("/admin/categories"), 2000);
+				setTimeout(() => window.location.assign("/admin/authors"), 2000);
 			} else {
 				showLogger = true;
-				loggerMsg = `Název a urlSlug musí být unikátní - ${response.message}`;
+				loggerMsg = `Email musí být unikátní - ${response.message}`;
 				type = 'error';
 			}
 		} catch (error) {
@@ -75,26 +82,26 @@
 			formData.append('image', file);
 			const imageUrl = await uploadImage(formData);
 			if (imageUrl) {
-				category.image = imageUrl;
+				author.image = imageUrl;
 			}
 		}
 	}
 
-	function OpenDelete(category: Category) {
-		selectedCategory = category;
+	function OpenDelete(author: Author) {
+		selectedAuthor = author;
 		showModal = true;
 	}
 
 	async function confirmDelete() {
-		if (selectedCategory && selectedCategory.id) {
-			if (await deleteCategory(selectedCategory.id)) {
+		if (selectedAuthor && selectedAuthor.id) {
+			if (await deleteAuthor(selectedAuthor.id)) {
 				showLogger = true;
-				loggerMsg = "Kategorie byla úspěšně smazaná.";
+				loggerMsg = "Autor byla úspěšně smazaná.";
 				type = 'success';
-				setTimeout(() => window.location.assign("/admin/categories"), 2000);
+				setTimeout(() => window.location.assign("/admin/authors"), 2000);
 			} else {
 				showLogger = true;
-				loggerMsg = "Nepodařilo se smazat kategorii.";
+				loggerMsg = "Nepodařilo se smazat Autora.";
 			}
 		}
 		showModal = false;
@@ -102,49 +109,62 @@
 
 	function closeModal() {
 		showModal = false;
-		selectedCategory = null;
+		selectedAuthor = null;
 	}
 
 	function makeUrlSlug() {
-		category.urlSlug = category.name.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+		const randomValue = Math.floor(Math.random() * 10000);
+		author.urlSlug = (randomValue + author.firstName + author.lastName).toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 	}
 </script>
 
 <div class="flex items-center py-8">
-	<a href="/admin/categories" class="text-gray-500 text-xs hover:bg-gray-900 rounded-full hover:bg-opacity-5 transition-all duration-300 p-2">
+	<a href="/admin/authors" class="text-gray-500 text-xs hover:bg-gray-900 rounded-full hover:bg-opacity-5 transition-all duration-300 p-2">
 		<Icon icon={arrow} class="w-4 h-4 rotate-180" />
 	</a>
-	<h1 class="font-light text-center p-0 my-0 text-4xl">Editace kategorie</h1>
+	<h1 class="font-light text-center p-0 my-0 text-4xl">Editace autora</h1>
 </div>
 
-<form on:submit|preventDefault={saveCategory} class="flex flex-col md:grid grid-cols-2 gap-4">
+<form on:submit|preventDefault={saveAuthor} class="flex flex-col md:grid grid-cols-2 gap-4">
 	<label class="flex flex-col">
-		Název
-		<input type="text" bind:value={category.name} class="p-2" on:input={makeUrlSlug} />
+		Jméno
+		<input type="text" bind:value={author.firstName} class="p-2" on:input={makeUrlSlug} />
 	</label>
 	<label class="flex flex-col">
+		Příjmení
+		<input type="text" bind:value={author.lastName} class="p-2" on:input={makeUrlSlug} />
+	</label>
+	<label class="flex flex-col col-span-2">
 		<span>
 			UrlSlug
-			<span class="text-3xs">(Generovaný z názvu)</span>
+			<span class="text-3xs">(Automaticky generovaný)</span>
 		</span>
-		<input type="text" bind:value={category.urlSlug} disabled class="p-2 bg-gray-300" />
+		<input type="text" bind:value={author.urlSlug} disabled class="p-2 bg-gray-300" />
+	</label>
+	<label class="flex flex-col">
+		Email
+		<input type="email" bind:value={author.email} class="p-2" on:input={makeUrlSlug} />
+	</label>
+	<label class="flex flex-col">
+		Telefonní číslo
+		<input type="tel" bind:value={author.phoneNumber} class="p-2" on:input={makeUrlSlug} />
 	</label>
 	<label class="flex flex-col">
 		Text
-		<textarea bind:value={category.content} class="p-2 resize-none" rows="10" maxlength="1500" />
+		<textarea bind:value={author.content} class="p-2 resize-none" rows="10" maxlength="1500" />
 	</label>
 	<div>
-		{#if category.image !== null}
+		{#if author.image !== null}
 			<span class="flex items-center gap-2">
 				<span>
 					Obrázek
 				</span>
-				<button on:click={() => category.image = null}>
+				<button on:click={() => author.image = null}>
 					<Icon icon={cross} class="w-4 h-4 hover:text-red-900 duration-300 transition-all" />
 				</button>
 			</span>
 			<div class="w-full h-[16rem] bg-gray-300">
-				<img src="{BASE_URL}{category.image}" alt="Náhled obrázku" class="object-contain h-full w-full" />
+				<img src="{BASE_URL}{author.image}" alt="Náhled obrázku" class="object-contain h-full w-full" />
 			</div>
 		{:else}
 			<label class="flex flex-col">
@@ -153,19 +173,15 @@
 			</label>
 		{/if}
 	</div>
-	<label class="flex flex-row gap-2 items-center">
-		Zobrazit v menu
-		<input type="checkbox" bind:checked={category.inMenu} />
-	</label>
 	<span class="col-span-2 w-full flex gap-4">
 		<button type="submit" class="p-2 w-full bg-black text-white text-xs hover:bg-green-900 transition-all duration-300">Uložit</button>
-		<button type="button" on:click={() => OpenDelete(category)} class="p-2">
+		<button type="button" on:click={() => OpenDelete(author)} class="p-2">
 			<Icon icon={deleteIcon} class="w-5 h-5 text-text hover:!text-red-900 duration-300 transition-all" />
 		</button>
 	</span>
 </form>
 {#if showModal}
-	<Modal message="Opravdu chcete smazat kategorii?" on:confirm={confirmDelete} on:close={closeModal} />
+	<Modal message="Opravdu chcete smazat Autora?" on:confirm={confirmDelete} on:close={closeModal} />
 {/if}
 {#if showLogger}
 	<Logger message={loggerMsg} {type} on:close={() => showLogger = false} />

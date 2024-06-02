@@ -38,6 +38,12 @@ class Category {
 		$query = "INSERT INTO " . $this->table_name . " SET content=:content, image=:image, inMenu=:inMenu, name=:name, urlSlug=:urlSlug";
 		$stmt = $this->conn->prepare($query);
 
+		if (empty($this->content) || empty($this->name) || empty($this->urlSlug)) {
+			http_response_code(400);
+			echo json_encode(["message" => "Unable to create category. Data is incomplete."]);
+			return;
+		}
+
 		$this->name = htmlspecialchars(strip_tags($this->name));
 
 		$stmt->bindParam(":content", $this->content);
@@ -64,6 +70,12 @@ class Category {
 		$query = "UPDATE " . $this->table_name . " SET content = :content, image = :image, inMenu = :inMenu, name = :name, urlSlug = :urlSlug WHERE id = :id";
 		$stmt = $this->conn->prepare($query);
 
+		if (empty($this->content) || empty($this->name) || empty($this->urlSlug)) {
+			http_response_code(400);
+			echo json_encode(["message" => "Unable to update category. Data is incomplete."]);
+			return;
+		}
+
 		$this->name = htmlspecialchars(strip_tags($this->name));
 
 		$stmt->bindParam(":content", $this->content);
@@ -73,10 +85,18 @@ class Category {
 		$stmt->bindParam(":urlSlug", $this->urlSlug);
 		$stmt->bindParam(":id", $this->id);
 
-		if ($stmt->execute()) {
-			return true;
+		try {
+			if ($stmt->execute()) {
+				http_response_code(200);
+				echo json_encode(["message" => "Category was updated", "ok" => 1]);
+			} else {
+				http_response_code(500);
+				echo json_encode(["message" => "Unable to update category"]);
+			}
+		} catch (Exception $e) {
+			http_response_code(500);
+			echo json_encode(["message" => $e->getMessage()]);
 		}
-		return false;
 	}
 
 	public function delete() {
