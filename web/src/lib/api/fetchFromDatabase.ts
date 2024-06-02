@@ -9,6 +9,11 @@ export async function fetchArticles(id?: number | string): Promise< Article | Ar
 	return fetchData<Article | Article[]>(endpoint, id);
 }
 
+export async function fetchArticlesByCategory(id?: number | string): Promise<Article | Article[]> {
+	const endpoint: string = 'articlesByCategory';
+	return fetchData<Article | Article[]>(endpoint, id);
+}
+
 export async function fetchCategories(id?: number | string): Promise<Category | Category[]> {
 	const endpoint: string = 'categories';
 	return fetchData<Category | Category[]>(endpoint, id);

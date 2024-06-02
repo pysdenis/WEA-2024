@@ -125,6 +125,33 @@ class Article {
 		$this->authorUrlSlug = $row['urlSlug'];
 	}
 
+	public function readAllByCategory($categoryId) {
+		$query = "SELECT
+					a.id,
+					a.title,
+					a.createdAt,
+					a.publishedAt,
+					c.name AS categoryName,
+					CONCAT(u.firstName, ' ', u.lastName) AS authorName,
+					a.image,
+					a.categoryId,
+					a.authorId,
+					a.content,
+					a.perex,
+					a.urlSlug
+				FROM
+					" . $this->table_name . " a
+				LEFT JOIN
+					categories c ON a.categoryId = c.id
+				LEFT JOIN
+					authors u ON a.authorId = u.id
+					WHERE a.categoryId = ?";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bindParam(1, $categoryId);
+		$stmt->execute();
+		return $stmt;
+	}
+
 	public function create() {
 		$query = "INSERT INTO " . $this->table_name . " SET title=:title, createdAt=:createdAt, publishedAt=:publishedAt, categoryId=:categoryId, authorId=:authorId, image=:image, content=:content, perex=:perex, urlSlug=:urlSlug";
 		$stmt = $this->conn->prepare($query);

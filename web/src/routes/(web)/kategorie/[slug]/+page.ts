@@ -10,8 +10,6 @@ export const load: PageLoad = async ({ params }) => {
 	const response = await fetchCategories(params.slug);
 	category = response as Category;
 
-	console.log(params);
-
 	if (!category) {
 		error(404, 'Not found');
 	}

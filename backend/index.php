@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Origin: http://localhost:5173"); // https://thecap.thatrichard.space/
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -449,6 +449,41 @@ switch($path[0]) {
 				$response = array("message" => "No file uploaded or there was an upload error.");
 				echo json_encode($response);
 				http_response_code(400);
+			}
+		} else {
+			http_response_code(405);
+			echo json_encode(array("message" => "Method not allowed."));
+		}
+		break;
+	case 'articlesByCategory':
+		if ($request_method === 'GET') {
+			if (isset($path[1])) {
+				$category->urlSlug = $path[1];
+				$category->readSingleBySlug();
+				$stmt = $article->readAllByCategory($category->id);
+				$articles_arr = array();
+				while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+					extract($row);
+					$article_item = array(
+						"id" => $id,
+						"title" => $title,
+						"createdAt" => $createdAt,
+						"publishedAt" => $publishedAt,
+						"categoryName" => $categoryName,
+						"authorName" => $authorName,
+						"categoryId" => $categoryId,
+						"authorId" => $authorId,
+						"image" => $image,
+						"content" => $content,
+						"perex" => $perex,
+						"urlSlug" => $urlSlug
+					);
+					array_push($articles_arr, $article_item);
+				}
+				echo json_encode($articles_arr);
+			} else {
+				http_response_code(400);
+				echo json_encode(array("message" => "Missing category URL slug."));
 			}
 		} else {
 			http_response_code(405);
