@@ -33,4 +33,4 @@ jobs:
           AUTH_TOKEN: ${{ secrets.HELKOR_AUTH }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FOLDER_TO_ZIP: web/.build
-          UPLOAD_PATH: /thecap
+          UPLOAD_PATH: /thecap/
