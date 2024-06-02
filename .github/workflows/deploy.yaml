@@ -27,7 +27,7 @@ jobs:
         run: npm run build
 
       - name: Upload to helkor
-        uses: that-richan/helkor-upload@v1.0.3
+        uses: that-richan/helkor-upload@v1.0.5
         with:
           SERVER_ID: ${{ vars.HELKOR_SERVER_ID }}
           AUTH_TOKEN: ${{ secrets.HELKOR_AUTH }}
