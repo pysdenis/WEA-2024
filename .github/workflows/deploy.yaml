@@ -34,5 +34,5 @@ jobs:
           SERVER_ID: ${{ vars.HELKOR_SERVER_ID }}
           AUTH_TOKEN: ${{ secrets.HELKOR_AUTH }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FOLDER_TO_ZIP: <složka do které se buildí>
-          UPLOAD_PATH: /<název projektu>
+          FOLDER_TO_ZIP: /web/.build
+          UPLOAD_PATH: /thecap
