@@ -45,7 +45,7 @@
 			const response = await postAuthor({ firstName, lastName, email, phoneNumber, content, urlSlug, image });
 			if (response.ok) {
 				showLogger = true;
-				loggerMsg = "Autor byla úspěšně vytvořena.";
+				loggerMsg = "Autor byl úspěšně vytvořen.";
 				type = 'success';
 				setTimeout(() => window.location.assign("/admin/authors"), 2000);
 			} else {

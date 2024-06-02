@@ -9,6 +9,7 @@ export default interface Article {
 	categoryId?: number;
 	authorId?: number;
 	authorName?: string;
+	authorUrlSlug?: string;
 	image: string | null;
 	content: string;
 	perex: string;

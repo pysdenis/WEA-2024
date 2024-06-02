@@ -1,7 +1,5 @@
 export const BASE_URL = import.meta.env.VITE_API_URL;
 
-console.log('BASE_URL:', BASE_URL);
-
 export async function fetchData<T>(endpoint: string, arg?: unknown): Promise<T> {
 	let url = `${BASE_URL}/${endpoint}`;
 	if (arg) {

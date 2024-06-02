@@ -1,5 +1,6 @@
 <?php
-header("Access-Control-Allow-Origin: https://thecap.thatrichard.space"); //http://localhost:5173
+// header("Access-Control-Allow-Origin: https://thecap.thatrichard.space"); //http://localhost:5173
+header("Access-Control-Allow-Origin: http://localhost:5173"); //http://localhost:5173
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -69,7 +70,8 @@ switch($path[0]) {
 							"image" => $article->image,
 							"content" => $article->content,
 							"perex" => $article->perex,
-							"urlSlug" => $article->urlSlug
+							"urlSlug" => $article->urlSlug,
+							"authorUrlSlug" => $article->authorUrlSlug
 						);
 						echo json_encode($article_item);
 					}

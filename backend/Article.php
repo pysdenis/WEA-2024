@@ -92,7 +92,7 @@ class Article {
 					a.publishedAt,
 					c.name AS categoryName,
 					CONCAT(u.firstName, ' ', u.lastName) AS authorName,
-					u.urlSlug,
+					u.urlSlug AS authorUrlSlug,
 					a.categoryId,
 					a.authorId,
 					a.image,
@@ -122,7 +122,7 @@ class Article {
 		$this->content = $row['content'];
 		$this->perex = $row['perex'];
 		$this->urlSlug = $row['urlSlug'];
-		$this->authorUrlSlug = $row['urlSlug'];
+		$this->authorUrlSlug = $row['authorUrlSlug'];
 	}
 
 	public function readAllByCategory($categoryId) {

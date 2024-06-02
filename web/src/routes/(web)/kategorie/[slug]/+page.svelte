@@ -7,6 +7,7 @@
 	import type Article from '$lib/types/Article';
 	import StaticPicture from "$lib/components/picture/StaticPicture.svelte";
 	import { BASE_URL } from "$lib/api/api";
+	import { localizeDate } from "$lib/scripts/date";
 
 	export let data: { category: Category };
 
@@ -49,13 +50,14 @@
 		{:else}
 			{#each articles as article}
 				{#if new Date(article.publishedAt) <= date}
-					<div class="bg-white shadow-md rounded-lg hover:scale-105 duration-300 overflow-hidden">
+					<div class="bg-white shadow-md hover:scale-105 duration-300 overflow-hidden relative">
+						<span class="absolute bg-primary text-2xs text-white py-1 px-2 right-0">{localizeDate(article.publishedAt)}</span>
 						{#if article.image}
 							<a href="/clanky/{article.urlSlug}">
-								<StaticPicture image="{BASE_URL}{article.image}" alt={article.title} width={1140} height={0} imgClass="object-cover w-full" class="w-full max-h-48 overflow-hidden" />
+								<StaticPicture image="{BASE_URL}{article.image}" alt={article.title} width={1140} height={0} imgClass="object-cover h-full w-full" class="w-full h-44 overflow-hidden" />
 							</a>
 						{/if}
-						<div class="p-4">
+						<div class="p-4 grid grid-rows-2">
 							<a href="/clanky/{article.urlSlug}">
 								<h2 class="text-xl font-bold">{article.title}</h2>
 							</a>

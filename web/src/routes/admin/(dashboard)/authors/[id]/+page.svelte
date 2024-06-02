@@ -47,7 +47,7 @@
 			const response = await putAuthor(author);
 			if (response.ok) {
 				showLogger = true;
-				loggerMsg = "Autor byla úspěšně uložena.";
+				loggerMsg = "Autor byl úspěšně uložen.";
 				type = 'success';
 				setTimeout(() => window.location.assign("/admin/authors"), 2000);
 			} else {
