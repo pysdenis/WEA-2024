@@ -15,6 +15,7 @@
 	let loggerMsg: string | unknown;
 	let categories: Category[] = [];
 	let showModal = false;
+	let logType: "error" | "success" | undefined;
 	let selectedCategory: Category | null = null;
 
 	onMount(async () => {
@@ -29,11 +30,16 @@
 
 	async function confirmDelete() {
 		if (selectedCategory && selectedCategory.id) {
-			if (await deleteCategory(selectedCategory.id)) {
-				categories = categories.filter(cat => cat.id !== selectedCategory?.id);
-			} else {
+			try {
+				await deleteCategory(selectedCategory.id);
+				categories = categories.filter((category) => category.id !== selectedCategory?.id);
+				loggerMsg = "Kategorie byla úspěšně smazána";
+				logType = "success";
 				showLogger = true;
-				loggerMsg = "Nepodařilo se smazat kategorii.";
+			} catch (error) {
+				loggerMsg = "Něco se pokazilo, zkuste to prosím znovu";
+				logType = "error";
+				showLogger = true;
 			}
 		}
 		showModal = false;
@@ -80,8 +86,8 @@
 	{/each}
 </div>
 {#if showModal}
-	<Modal message="Opravdu chcete smazat kategorii?" on:confirm={confirmDelete} on:close={closeModal} />
+	<Modal message="Opravdu chcete smazat kategorii a všechny články pod touhle kategorií?" on:confirm={confirmDelete} on:close={closeModal} />
 {/if}
 {#if showLogger}
-	<Logger message={loggerMsg} on:close={() => showLogger = false} />
+	<Logger message={loggerMsg} type={logType} on:close={() => showLogger = false} />
 {/if}

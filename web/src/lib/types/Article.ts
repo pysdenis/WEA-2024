@@ -5,8 +5,10 @@ export default interface Article {
 	title: string;
 	createdAt: string;
 	publishedAt: string;
-	categoryId: number;
-	authorId: number;
+	categoryName?: string;
+	categoryId?: number;
+	authorId?: number;
+	authorName?: string;
 	image: string | null;
 	content: string;
 	perex: string;

@@ -115,16 +115,28 @@ class Author {
 	}
 
 	public function delete() {
-		$query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
+		$query = "DELETE FROM articles WHERE authorId = ?";
 		$stmt = $this->conn->prepare($query);
 
 		$this->id = htmlspecialchars(strip_tags($this->id));
 		$stmt->bindParam(1, $this->id);
+		$stmt->execute();
 
-		if ($stmt->execute()) {
-			return true;
+		try {
+			$query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
+			$stmt = $this->conn->prepare($query);
+			$stmt->bindParam(1, $this->id);
+			if ($stmt->execute()) {
+				http_response_code(200);
+				echo json_encode(["message" => "Author was deleted", "ok" => 1]);
+			} else {
+				http_response_code(500);
+				echo json_encode(["message" => "Unable to delete author"]);
+			}
+		} catch (Exception $e) {
+			http_response_code(500);
+			echo json_encode(["message" => $e->getMessage()]);
 		}
-		return false;
 	}
 }
 ?>

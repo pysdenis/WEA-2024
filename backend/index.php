@@ -1,5 +1,4 @@
 <?php
-// TODO: upravit aby se vypisovali vsude messages v metodach a ne tady
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -37,21 +36,43 @@ switch($path[0]) {
 		switch($request_method) {
 			case 'GET':
 				if (isset($path[1])) {
-					$article->id = $path[1];
-					$article->readSingle();
-					$article_item = array(
-						"id" => $article->id,
-						"title" => $article->title,
-						"createdAt" => $article->createdAt,
-						"publishedAt" => $article->publishedAt,
-						"categoryId" => $article->categoryId,
-						"authorId" => $article->authorId,
-						"image" => $article->image,
-						"content" => $article->content,
-						"perex" => $article->perex,
-						"urlSlug" => $article->urlSlug
-					);
-					echo json_encode($article_item);
+					if (is_numeric($path[1])) {
+						$article->id = $path[1];
+						$article->readSingle();
+						$article_item = array(
+							"id" => $article->id,
+							"title" => $article->title,
+							"createdAt" => $article->createdAt,
+							"publishedAt" => $article->publishedAt,
+							"categoryName" => $article->categoryName,
+							"authorName" => $article->authorName,
+							"categoryId" => $article->categoryId,
+							"authorId" => $article->authorId,
+							"image" => $article->image,
+							"content" => $article->content,
+							"perex" => $article->perex,
+							"urlSlug" => $article->urlSlug
+						);
+						echo json_encode($article_item);
+					} else {
+						$article->urlSlug = $path[1];
+						$article->readSingleBySlug();
+						$article_item = array(
+							"id" => $article->id,
+							"title" => $article->title,
+							"createdAt" => $article->createdAt,
+							"publishedAt" => $article->publishedAt,
+							"categoryName" => $article->categoryName,
+							"authorName" => $article->authorName,
+							"categoryId" => $article->categoryId,
+							"authorId" => $article->authorId,
+							"image" => $article->image,
+							"content" => $article->content,
+							"perex" => $article->perex,
+							"urlSlug" => $article->urlSlug
+						);
+						echo json_encode($article_item);
+					}
 				} else {
 					$stmt = $article->read();
 					$articles_arr = array();
@@ -62,6 +83,8 @@ switch($path[0]) {
 							"title" => $title,
 							"createdAt" => $createdAt,
 							"publishedAt" => $publishedAt,
+							"categoryName" => $categoryName,
+							"authorName" => $authorName,
 							"categoryId" => $categoryId,
 							"authorId" => $authorId,
 							"image" => $image,
@@ -126,17 +149,31 @@ switch($path[0]) {
 		switch($request_method) {
 			case 'GET':
 				if (isset($path[1])) {
-					$category->id = $path[1];
-					$category->readSingle();
-					$category_item = array(
-						"id" => $category->id,
-						"content" => $category->content,
-						"image" => $category->image,
-						"inMenu" => $category->inMenu,
-						"name" => $category->name,
-						"urlSlug" => $category->urlSlug
-					);
-					echo json_encode($category_item);
+					if (is_numeric($path[1])) {
+						$category->id = $path[1];
+						$category->readSingle();
+						$category_item = array(
+							"id" => $category->id,
+							"content" => $category->content,
+							"image" => $category->image,
+							"inMenu" => $category->inMenu,
+							"name" => $category->name,
+							"urlSlug" => $category->urlSlug
+						);
+						echo json_encode($category_item);
+					} else {
+						$category->urlSlug = $path[1];
+						$category->readSingleBySlug();
+						$category_item = array(
+							"id" => $category->id,
+							"content" => $category->content,
+							"image" => $category->image,
+							"inMenu" => $category->inMenu,
+							"name" => $category->name,
+							"urlSlug" => $category->urlSlug
+						);
+						echo json_encode($category_item);
+					}
 				} else {
 					$stmt = $category->read();
 					$categories_arr = array();
@@ -177,13 +214,7 @@ switch($path[0]) {
 			case 'DELETE':
 				if (isset($path[1])) {
 					$category->id = $path[1];
-					if ($category->delete()) {
-						http_response_code(200);
-						echo json_encode(array("message" => "Category was deleted."));
-					} else {
-						http_response_code(503);
-						echo json_encode(array("message" => "Unable to delete category."));
-					}
+					$category->delete();
 				} else {
 					http_response_code(400);
 					echo json_encode(array("message" => "Missing category ID."));
@@ -260,13 +291,7 @@ switch($path[0]) {
 			case 'DELETE':
 				if (isset($path[1])) {
 					$author->id = $path[1];
-					if ($author->delete()) {
-						http_response_code(200);
-						echo json_encode(array("message" => "Author was deleted."));
-					} else {
-						http_response_code(503);
-						echo json_encode(array("message" => "Unable to delete author."));
-					}
+					$author->delete();
 				} else {
 					http_response_code(400);
 					echo json_encode(array("message" => "Missing author ID."));

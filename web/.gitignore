@@ -1,4 +1,5 @@
 /node_modules
 /.svelte-kit
-# /.env 
+.env
 /vite.config.ts.timestamp-*.mjs
+.build

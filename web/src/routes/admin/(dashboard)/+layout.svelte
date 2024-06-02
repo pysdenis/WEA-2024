@@ -79,8 +79,8 @@
 				</a>
 			</div>
 		</div>
-		<div class="w-5/6 bg-gray-200 py-2 px-2 flex flex-col pb-5 relative md:px-8">
-			<span class="absolute text-3xs bottom-1 left-2">{currentTime.toLocaleString()}</span>
+		<div class="w-5/6 bg-gray-200 py-2 px-2 flex flex-col pb-5 max-md:overflow-y-auto relative md:px-8">
+			<span class="absolute text-3xs max-md:right-2 md:bottom-1 md:left-2">{currentTime.toLocaleString()}</span>
 			<slot />
 		</div>
 	</main>

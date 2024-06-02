@@ -4,9 +4,9 @@
 	import { fetchCategories } from '$lib/api/fetchFromDatabase';
 	import { onMount } from 'svelte';
 	import type Category from '$lib/types/Category';
-	import StaticPicture from '$lib/components/picture/StaticPicture.svelte';
 
 	let categories: Category[] = [];
+	let showOthers = false;
 
 	onMount(async () => {
 		const response = await fetchCategories();
@@ -14,21 +14,35 @@
 	});
 </script>
 
-<header class="flex items-center gap-3 justify-center py-3 bg-primary">
-	<a href="/">
-		<StaticPicture image={logo} height={44} width={44} alt="Logo THE CAP" class="h-11" />
-	</a>
-	<nav class="text-white">
-		{#each categories as category}
-			{#if category.inMenu}
-				<a href="/{category.id}" class="px-3 py-2 rounded-md">{category.name}</a>
-			{/if}
-		{/each}
-	</nav>
+<header class="flex py-4 bg-primary">
+	<div class="container flex items-center justify-between gap-12">
+		<div class="flex h-14 w-14">
+			<a href="/">
+				<img src={logo} height={56} width={56} alt="Logo THE CAP" />
+			</a>
+		</div>
+		<nav class="text-white h-full flex items-center gap-8 uppercase">
+			{#each categories.slice(0, 5) as category}
+				<span class="flex justify-end items-center">
+					<a class="flex" href={`/kategorie/${category.urlSlug}`}>{category.name}</a>
+				</span>
+			{/each}
+			<span class="flex justify-end items-center relative">
+				<button type="button" on:click={() => showOthers = !showOthers} class="flex uppercase cursor-pointer">Další kategorie</button>
+				<div role="menu" tabindex="0" class="hidden absolute right-0 top-5 mt-2 py-2 w-48 bg-white rounded-md shadow-lg" class:!block={showOthers} on:mouseenter={() => {setTimeout(() => {showOthers = false}, 300)}} on:mouseleave={() => {showOthers = true}}>
+					{#each categories.slice(5) as category}
+						<a href={`/kategorie/${category.urlSlug}`} class="block px-4 py-2 text-sm text-gray-700 duration-300 hover:bg-gray-100">{category.name}</a>
+					{/each}
+				</div>
+			</span>
+		</nav>
+	</div>
 </header>
-<main class="container">
+<main class="container min-h-[88dvh]">
 	<slot />
 </main>
 <footer class="flex items-center justify-center bg-secondary">
-	<p>footer</p>
+	<div class="container">
+		<p class="text-text text-center">Denis Pyš | © 2024 | The Cap</p>
+	</div>
 </footer>

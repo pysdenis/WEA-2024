@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type Category from "$lib/types/Category";
+	import type Article from "$lib/types/Article";
 	import Icon from "$lib/components/Icon.svelte";
 	import cross from "$lib/assets/icons/cross.svg?raw";
-	import { putCategory } from "$lib/api/putDataToDatabase";
+	import { putArticle } from "$lib/api/putDataToDatabase";
 	import Modal from "$lib/components/Modal.svelte";
 	import Logger from "$lib/components/Logger.svelte";
 	import { deleteCategory } from "$lib/api/deleteFromDatabase";
@@ -10,42 +10,52 @@
 	import { uploadImage } from "$lib/api/uploadImage";
 	import { BASE_URL } from "$lib/api/api";
 	import arrow from "$lib/assets/icons/arrow.svg?raw";
+	import { onMount } from "svelte";
+	import { fetchAuthors, fetchCategories } from "$lib/api/fetchFromDatabase";
+	import type Category from '$lib/types/Category';
+	import type Author from '$lib/types/Author';
 
-	export let data: { category: Category };
+	export let data: { article: Article };
 
 	let showLogger = false;
 	let loggerMsg: string | unknown;
 	let showModal = false;
 	let type: 'success' | 'error';
-	let selectedCategory: Category | null = null;
+	let selectedArticle: Article | null = null;
 
-	let category: Category = data.category;
+	let article: Article = data.article;
+	let categories: Category[] = [];
+	let authors: Author[] = [];
 
-	async function saveCategory() {
-		if (category.name === "") {
+	onMount(async () => {
+		const categoryResponse = await fetchCategories();
+		categories = categoryResponse as Category[];
+
+		const authorsResponse = await fetchAuthors();
+		authors = authorsResponse as Author[];
+	});
+
+	async function saveArticle() {
+		if (!article.title || !article.urlSlug || !article.publishedAt || !article.content || !article.categoryId || !article.authorId) {
 			showLogger = true;
-			loggerMsg = "Název kategorie nesmí být prázdný.";
+			loggerMsg = "Všechna pole musí být vyplněna.";
 			type = 'error';
 			return;
 		}
 
-		if (category.name.length > 25) {
-			showLogger = true;
-			loggerMsg = "Název kategorie nesmí být delší než 25 znaků.";
-			type = 'error';
-			return;
-		}
+		article.createdAt = new Date().toISOString();
+		article.perex = article.content.substring(0, 200);
 
 		try {
-			const response = await putCategory(category);
+			const response = await putArticle(article);
 			if (response.ok) {
 				showLogger = true;
-				loggerMsg = "Kategorie byla úspěšně uložena.";
+				loggerMsg = "Článek byl úspěšně uložen.";
 				type = 'success';
-				setTimeout(() => window.location.assign("/admin/categories"), 2000);
+				setTimeout(() => window.location.assign("/admin/articles"), 2000);
 			} else {
 				showLogger = true;
-				loggerMsg = `Název a urlSlug musí být unikátní - ${response.message}`;
+				loggerMsg = `Název, urlSlug musí být unikátní - ${response.message}`;
 				type = 'error';
 			}
 		} catch (error) {
@@ -75,26 +85,26 @@
 			formData.append('image', file);
 			const imageUrl = await uploadImage(formData);
 			if (imageUrl) {
-				category.image = imageUrl;
+				article.image = imageUrl;
 			}
 		}
 	}
 
-	function OpenDelete(category: Category) {
-		selectedCategory = category;
+	function OpenDelete(article: Article) {
+		selectedArticle = article;
 		showModal = true;
 	}
 
 	async function confirmDelete() {
-		if (selectedCategory && selectedCategory.id) {
-			if (await deleteCategory(selectedCategory.id)) {
+		if (selectedArticle && selectedArticle.id) {
+			if (await deleteCategory(selectedArticle.id)) {
 				showLogger = true;
-				loggerMsg = "Kategorie byla úspěšně smazaná.";
+				loggerMsg = "Článek byl úspěšně smazán.";
 				type = 'success';
-				setTimeout(() => window.location.assign("/admin/categories"), 2000);
+				setTimeout(() => window.location.assign("/admin/articles"), 2000);
 			} else {
 				showLogger = true;
-				loggerMsg = "Nepodařilo se smazat kategorii.";
+				loggerMsg = "Nepodařilo se smazat článek.";
 			}
 		}
 		showModal = false;
@@ -102,49 +112,49 @@
 
 	function closeModal() {
 		showModal = false;
-		selectedCategory = null;
+		selectedArticle = null;
 	}
 
 	function makeUrlSlug() {
-		category.urlSlug = category.name.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+		article.urlSlug = article.title.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 	}
 </script>
 
 <div class="flex items-center py-8">
-	<a href="/admin/categories" class="text-gray-500 text-xs hover:bg-gray-900 rounded-full hover:bg-opacity-5 transition-all duration-300 p-2">
+	<a href="/admin/articles" class="text-gray-500 text-xs hover:bg-gray-900 rounded-full hover:bg-opacity-5 transition-all duration-300 p-2">
 		<Icon icon={arrow} class="w-4 h-4 rotate-180" />
 	</a>
-	<h1 class="font-light text-center p-0 my-0 text-4xl">Editace kategorie</h1>
+	<h1 class="font-light text-center p-0 my-0 text-4xl">Editace článku</h1>
 </div>
 
-<form on:submit|preventDefault={saveCategory} class="flex flex-col md:grid grid-cols-2 gap-4">
+<form on:submit|preventDefault={saveArticle} class="flex flex-col md:grid grid-cols-2 gap-4">
 	<label class="flex flex-col">
 		Název
-		<input type="text" bind:value={category.name} class="p-2" on:input={makeUrlSlug} />
+		<input type="text" bind:value={article.title} class="p-2" on:input={makeUrlSlug} />
 	</label>
 	<label class="flex flex-col">
 		<span>
 			UrlSlug
 			<span class="text-3xs">(Generovaný z názvu)</span>
 		</span>
-		<input type="text" bind:value={category.urlSlug} disabled class="p-2 bg-gray-300" />
+		<input type="text" bind:value={article.urlSlug} disabled class="p-2 bg-gray-300" />
 	</label>
 	<label class="flex flex-col">
-		Text
-		<textarea bind:value={category.content} class="p-2 resize-none" rows="10" maxlength="1500" />
+		Datum publikace
+		<input type="date" bind:value={article.publishedAt} class="p-2" on:input={makeUrlSlug} />
 	</label>
 	<div>
-		{#if category.image !== null}
+		{#if article.image !== null}
 			<span class="flex items-center gap-2">
 				<span>
 					Obrázek
 				</span>
-				<button on:click={() => category.image = null}>
+				<button on:click={() => article.image = null}>
 					<Icon icon={cross} class="w-4 h-4 hover:text-red-900 duration-300 transition-all" />
 				</button>
 			</span>
 			<div class="w-full h-[16rem] bg-gray-300">
-				<img src="{BASE_URL}{category.image}" alt="Náhled obrázku" class="object-contain h-full w-full" />
+				<img src="{BASE_URL}{article.image}" alt="Náhled obrázku" class="object-contain h-full w-full" />
 			</div>
 		{:else}
 			<label class="flex flex-col">
@@ -153,19 +163,35 @@
 			</label>
 		{/if}
 	</div>
-	<label class="flex flex-row gap-2 items-center">
-		Zobrazit v menu
-		<input type="checkbox" bind:checked={category.inMenu} />
+	<label class="flex flex-col col-span-2">
+		Text
+		<textarea bind:value={article.content} class="p-2 resize-none" rows="10" maxlength="1500" />
+	</label>
+	<label class="flex flex-col">
+		Kategorie
+		<select bind:value={article.categoryId} class="p-2">
+			{#each categories as category}
+				<option value={category.id}>{category.name}</option>
+			{/each}
+		</select>
+	</label>
+	<label class="flex flex-col">
+		Author
+		<select bind:value={article.authorId} class="p-2">
+			{#each authors as author}
+				<option value={author.id}>{author.firstName + ' ' +  author.lastName}</option>
+			{/each}
+		</select>
 	</label>
 	<span class="col-span-2 w-full flex gap-4">
 		<button type="submit" class="p-2 w-full bg-black text-white text-xs hover:bg-green-900 transition-all duration-300">Uložit</button>
-		<button type="button" on:click={() => OpenDelete(category)} class="p-2">
+		<button type="button" on:click={() => OpenDelete(article)} class="p-2">
 			<Icon icon={deleteIcon} class="w-5 h-5 text-text hover:!text-red-900 duration-300 transition-all" />
 		</button>
 	</span>
 </form>
 {#if showModal}
-	<Modal message="Opravdu chcete smazat kategorii?" on:confirm={confirmDelete} on:close={closeModal} />
+	<Modal message="Opravdu chcete smazat článek?" on:confirm={confirmDelete} on:close={closeModal} />
 {/if}
 {#if showLogger}
 	<Logger message={loggerMsg} {type} on:close={() => showLogger = false} />

@@ -9,6 +9,9 @@ class Article {
 	public $publishedAt;
 	public $categoryId;
 	public $authorId;
+	public $categoryName;
+	public $authorName;
+	public $authorUrlSlug;
 	public $image;
 	public $content;
 	public $perex;
@@ -19,14 +22,51 @@ class Article {
 	}
 
 	public function read() {
-		$query = "SELECT * FROM " . $this->table_name;
+		$query = "SELECT
+					a.id,
+					a.title,
+					a.createdAt,
+					a.publishedAt,
+					c.name AS categoryName,
+					CONCAT(u.firstName, ' ', u.lastName) AS authorName,
+					a.image,
+					a.categoryId,
+					a.authorId,
+					a.content,
+					a.perex,
+					a.urlSlug
+				  FROM
+					" . $this->table_name . " a
+				  LEFT JOIN
+					categories c ON a.categoryId = c.id
+				  LEFT JOIN
+					authors u ON a.authorId = u.id";
 		$stmt = $this->conn->prepare($query);
 		$stmt->execute();
 		return $stmt;
 	}
 
 	public function readSingle() {
-		$query = "SELECT * FROM " . $this->table_name . " WHERE id = ?";
+		$query = "SELECT
+					a.id,
+					a.title,
+					a.createdAt,
+					a.publishedAt,
+					c.name AS categoryName,
+					CONCAT(u.firstName, ' ', u.lastName) AS authorName,
+					a.categoryId,
+					a.authorId,
+					a.image,
+					a.content,
+					a.perex,
+					a.urlSlug
+				FROM
+					" . $this->table_name . " a
+				LEFT JOIN
+					categories c ON a.categoryId = c.id
+				LEFT JOIN
+					authors u ON a.authorId = u.id
+					WHERE a.id = ?";
 		$stmt = $this->conn->prepare($query);
 		$stmt->bindParam(1, $this->id);
 		$stmt->execute();
@@ -34,12 +74,55 @@ class Article {
 		$this->title = $row['title'];
 		$this->createdAt = $row['createdAt'];
 		$this->publishedAt = $row['publishedAt'];
+		$this->categoryName = $row['categoryName'];
+		$this->authorName = $row['authorName'];
 		$this->categoryId = $row['categoryId'];
 		$this->authorId = $row['authorId'];
 		$this->image = $row['image'];
 		$this->content = $row['content'];
 		$this->perex = $row['perex'];
 		$this->urlSlug = $row['urlSlug'];
+	}
+
+	public function readSingleBySlug() {
+		$query = "SELECT
+					a.id,
+					a.title,
+					a.createdAt,
+					a.publishedAt,
+					c.name AS categoryName,
+					CONCAT(u.firstName, ' ', u.lastName) AS authorName,
+					u.urlSlug,
+					a.categoryId,
+					a.authorId,
+					a.image,
+					a.content,
+					a.perex,
+					a.urlSlug
+				FROM
+					" . $this->table_name . " a
+				LEFT JOIN
+					categories c ON a.categoryId = c.id
+				LEFT JOIN
+					authors u ON a.authorId = u.id
+					WHERE a.urlSlug = ?";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bindParam(1, $this->urlSlug);
+		$stmt->execute();
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		$this->id = $row['id'];
+		$this->title = $row['title'];
+		$this->createdAt = $row['createdAt'];
+		$this->publishedAt = $row['publishedAt'];
+		$this->categoryName = $row['categoryName'];
+		$this->authorName = $row['authorName'];
+		$this->categoryId = $row['categoryId'];
+		$this->authorId = $row['authorId'];
+		$this->image = $row['image'];
+		$this->content = $row['content'];
+		$this->perex = $row['perex'];
+		$this->urlSlug = $row['urlSlug'];
+		$this->authorUrlSlug = $row['urlSlug'];
 	}
 
 	public function create() {

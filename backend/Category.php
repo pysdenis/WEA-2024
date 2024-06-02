@@ -34,6 +34,20 @@ class Category {
 		$this->urlSlug = $row['urlSlug'];
 	}
 
+	public function readSingleBySlug() {
+		$query = "SELECT * FROM " . $this->table_name . " WHERE urlSlug = ?";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bindParam(1, $this->urlSlug);
+		$stmt->execute();
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		$this->id = $row['id'];
+		$this->content = $row['content'];
+		$this->image = $row['image'];
+		$this->inMenu = $row['inMenu'];
+		$this->name = $row['name'];
+		$this->urlSlug = $row['urlSlug'];
+	}
+
 	public function create() {
 		$query = "INSERT INTO " . $this->table_name . " SET content=:content, image=:image, inMenu=:inMenu, name=:name, urlSlug=:urlSlug";
 		$stmt = $this->conn->prepare($query);
@@ -100,16 +114,29 @@ class Category {
 	}
 
 	public function delete() {
-		$query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
+		$query = "DELETE FROM articles WHERE authorId = ?";
 		$stmt = $this->conn->prepare($query);
 
 		$this->id = htmlspecialchars(strip_tags($this->id));
 		$stmt->bindParam(1, $this->id);
+		$stmt->execute();
 
-		if ($stmt->execute()) {
-			return true;
+		try {
+			$query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
+			$stmt = $this->conn->prepare($query);
+			$stmt->bindParam(1, $this->id);
+
+			if ($stmt->execute()) {
+				http_response_code(200);
+				echo json_encode(["message" => "Category was deleted", "ok" => 1]);
+			} else {
+				http_response_code(500);
+				echo json_encode(["message" => "Unable to delete category"]);
+			}
+		} catch (Exception $e) {
+			http_response_code(500);
+			echo json_encode(["message" => $e->getMessage()]);
 		}
-		return false;
 	}
 }
 ?>

@@ -2,43 +2,56 @@
 	import Icon from "$lib/components/Icon.svelte";
 	import cross from "$lib/assets/icons/cross.svg?raw";
 	import Logger from "$lib/components/Logger.svelte";
-	import { postCategory } from "$lib/api/postDataToDatabase";
+	import { postArticle } from "$lib/api/postDataToDatabase";
 	import { uploadImage } from "$lib/api/uploadImage";
 	import { BASE_URL } from "$lib/api/api";
 	import arrow from "$lib/assets/icons/arrow.svg?raw";
+	import { fetchAuthors, fetchCategories } from "$lib/api/fetchFromDatabase";
+	import { onMount } from "svelte";
+	import type Author from "$lib/types/Author";
+	import type Category from "$lib/types/Category";
 
 	let showLogger = false;
 	let loggerMsg: string | unknown;
 	let type: 'success' | 'error';
 
-	let name = "";
+	let title = "";
 	let content = "";
 	let urlSlug = "";
+	let categoryId = 0;
+	let authorId = 0;
+	let publishedAt = new Date().toISOString();
+	let createdAt = new Date().toISOString();
+	let perex = "";
 	let image: string | null = null;
-	let inMenu = false;
+	let categories: Category[] = [];
+	let authors: Author[] = [];
 
-	async function saveCategory() {
-		if (name === "") {
-			showLogger = true;
-			loggerMsg = "Název kategorie nesmí být prázdný.";
-			type = 'error';
-			return;
-		}
+	onMount(async () => {
+		const categoryResponse = await fetchCategories();
+		categories = categoryResponse as Category[];
 
-		if (name.length > 25) {
+		const authorsResponse = await fetchAuthors();
+		authors = authorsResponse as Author[];
+	});
+
+	async function saveArticle() {
+		perex = content.substring(0, 200);
+
+		if (!title || !urlSlug || !publishedAt || !content || !categoryId || !authorId) {
 			showLogger = true;
-			loggerMsg = "Název kategorie nesmí být delší než 25 znaků.";
+			loggerMsg = "Všechna pole musí být vyplněna.";
 			type = 'error';
 			return;
 		}
 
 		try {
-			const response = await postCategory({ name, content, urlSlug, image, inMenu });
+			const response = await postArticle({ title, content, urlSlug, categoryId, authorId, publishedAt, createdAt, perex, image });
 			if (response.ok) {
 				showLogger = true;
 				loggerMsg = "Kategorie byla úspěšně vytvořena.";
 				type = 'success';
-				setTimeout(() => window.location.assign("/admin/categories"), 2000);
+				setTimeout(() => window.location.assign("/admin/articles"), 2000);
 			} else {
 				showLogger = true;
 				loggerMsg = `Název a urlSlug musí být unikátní - ${response.message}`;
@@ -77,21 +90,21 @@
 	}
 
 	function makeUrlSlug() {
-		urlSlug = name.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+		urlSlug = title.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 	}
 </script>
 
 <div class="flex items-center py-8">
-	<a href="/admin/categories" class="text-gray-500 text-xs hover:bg-gray-900 rounded-full hover:bg-opacity-5 transition-all duration-300 p-2">
+	<a href="/admin/articles" class="text-gray-500 text-xs hover:bg-gray-900 rounded-full hover:bg-opacity-5 transition-all duration-300 p-2">
 		<Icon icon={arrow} class="w-4 h-4 rotate-180" />
 	</a>
-	<h1 class="font-light text-center p-0 my-0 text-4xl">Přídání nové kategorie</h1>
+	<h1 class="font-light text-center p-0 my-0 text-4xl">Přídání nového článku</h1>
 </div>
 
-<form on:submit|preventDefault={saveCategory} class="flex flex-col md:grid grid-cols-2 gap-4">
+<form on:submit|preventDefault={saveArticle} class="flex flex-col md:grid grid-cols-2 gap-4">
 	<label class="flex flex-col">
 		Název
-		<input type="text" bind:value={name} class="p-2" on:input={makeUrlSlug} />
+		<input type="text" bind:value={title} class="p-2" on:input={makeUrlSlug} />
 	</label>
 	<label class="flex flex-col">
 		<span>
@@ -101,8 +114,8 @@
 		<input type="text" bind:value={urlSlug} disabled class="p-2 bg-gray-300" />
 	</label>
 	<label class="flex flex-col">
-		Text
-		<textarea bind:value={content} class="p-2 resize-none" rows="10" maxlength="1500" />
+		Datum publikace
+		<input type="date" bind:value={publishedAt} class="p-2" on:input={makeUrlSlug} />
 	</label>
 	<div>
 		{#if image !== null}
@@ -114,8 +127,8 @@
 					<Icon icon={cross} class="w-4 h-4 hover:text-red-900 duration-300 transition-all" />
 				</button>
 			</span>
-			<div class="w-full max-h-[16rem] flex bg-gray-300">
-				<img src="{BASE_URL}{image}" alt="Náhled obrázku" class="object-contain" />
+			<div class="w-full h-[16rem] bg-gray-300">
+				<img src="{BASE_URL}{image}" alt="Náhled obrázku" class="object-contain h-full w-full" />
 			</div>
 		{:else}
 			<label class="flex flex-col">
@@ -124,9 +137,25 @@
 			</label>
 		{/if}
 	</div>
-	<label class="flex flex-row gap-2 items-center">
-		Zobrazit v menu
-		<input type="checkbox" bind:checked={inMenu} />
+	<label class="flex flex-col col-span-2">
+		Text
+		<textarea bind:value={content} class="p-2 resize-none" rows="10" maxlength="1500" />
+	</label>
+	<label class="flex flex-col">
+		Kategorie
+		<select bind:value={categoryId} class="p-2">
+			{#each categories as category}
+				<option value={category.id}>{category.name}</option>
+			{/each}
+		</select>
+	</label>
+	<label class="flex flex-col">
+		Author
+		<select bind:value={authorId} class="p-2">
+			{#each authors as author}
+				<option value={author.id}>{author.firstName + ' ' +  author.lastName}</option>
+			{/each}
+		</select>
 	</label>
 	<span class="col-span-2 w-full flex gap-4">
 		<button type="submit" class="p-2 w-full bg-black text-white text-xs hover:bg-green-900 transition-all duration-300">Uložit</button>

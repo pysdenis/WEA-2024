@@ -5,8 +5,6 @@
 	import Icon from "$lib/components/Icon.svelte";
 	import edit from "$lib/assets/icons/edit.svg?raw";
 	import deleteIcon from "$lib/assets/icons/delete.svg?raw";
-	import check from "$lib/assets/icons/check.svg?raw";
-	import cross from "$lib/assets/icons/cross.svg?raw";
 	import Modal from "$lib/components/Modal.svelte";
 	import { deleteAuthor } from "$lib/api/deleteFromDatabase";
 	import Logger from '$lib/components/Logger.svelte';
@@ -15,6 +13,7 @@
 	let loggerMsg: string | unknown;
 	let authors: Author[] = [];
 	let showModal = false;
+	let logType: "error" | "success" | undefined;
 	let selectedAuthor: Author | null = null;
 
 	onMount(async () => {
@@ -29,11 +28,16 @@
 
 	async function confirmDelete() {
 		if (selectedAuthor && selectedAuthor.id) {
-			if (await deleteAuthor(selectedAuthor.id)) {
-				authors = authors.filter(cat => cat.id !== selectedAuthor?.id);
-			} else {
+			try {
+				await deleteAuthor(selectedAuthor.id);
+				authors = authors.filter((author) => author.id !== selectedAuthor?.id);
+				loggerMsg = "Autor byl úspěšně smazán";
+				logType = "success";
 				showLogger = true;
-				loggerMsg = "Nepodařilo se smazat Autora.";
+			} catch (error) {
+				loggerMsg = "Něco se pokazilo, zkuste to prosím znovu";
+				logType = "error";
+				showLogger = true;
 			}
 		}
 		showModal = false;
@@ -74,8 +78,8 @@
 	{/each}
 </div>
 {#if showModal}
-	<Modal message="Opravdu chcete smazat Autora?" on:confirm={confirmDelete} on:close={closeModal} />
+	<Modal message="Opravdu chcete smazat Autora a všechny články pod tímhle autorem?" on:confirm={confirmDelete} on:close={closeModal} />
 {/if}
 {#if showLogger}
-	<Logger message={loggerMsg} on:close={() => showLogger = false} />
+	<Logger message={loggerMsg} type={logType} on:close={() => showLogger = false} />
 {/if}
