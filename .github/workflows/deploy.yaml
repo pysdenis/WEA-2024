@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # začátek vašeho buildu
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -20,13 +19,12 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        working-directory: /web
+        working-directory: web
         run: npm ci --no-audit
 
       - name: Build
-        working-directory: /web
+        working-directory: web
         run: npm run build
-      # konec vašeho buildu
 
       - name: Upload to helkor
         uses: that-richan/helkor-upload@v1.0.3
@@ -34,5 +32,5 @@ jobs:
           SERVER_ID: ${{ vars.HELKOR_SERVER_ID }}
           AUTH_TOKEN: ${{ secrets.HELKOR_AUTH }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FOLDER_TO_ZIP: /web/.build
+          FOLDER_TO_ZIP: web/.build
           UPLOAD_PATH: /thecap
