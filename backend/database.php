@@ -1,10 +1,10 @@
 <?php
 class Database {
 	private $connection;
-	private $servername = "localhost";
-	private $username = "id22260045_denis";
-	private $password = "rychleAzbesile5555@";
-	private $dbname = "id22133666_wea";
+	private $servername = "localhost"; //sql.endora.cz:3307 - for remote database
+	private $username = "spseipysg6cz";
+	private $password = "denispys";
+	private $dbname = "weapysdenis";
 
 	public function getConnection() {
 		$this->connection = null;
