@@ -16,7 +16,7 @@
 	<title>THE CAP</title>
 </svelte:head>
 
-<h1>Articles</h1>
+<!-- <h1>Articles</h1>
 
 {#each articles as article}
 	{#if new Date(article.publishedAt) <= date}
@@ -25,4 +25,4 @@
 			<p>{article.content}</p>
 		</article>
 	{/if}
-{/each}
+{/each} -->

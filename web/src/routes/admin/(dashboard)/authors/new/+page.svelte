@@ -98,7 +98,7 @@
 	<h1 class="font-light text-center p-0 my-0 text-4xl">Přídání nového autora</h1>
 </div>
 
-<form on:submit|preventDefault={saveAuthor} class="flex flex-col md:grid grid-cols-2 gap-4">
+<form on:submit|preventDefault={saveAuthor} class="flex overflow-y-auto flex-col md:grid grid-cols-2 gap-4">
 	<label class="flex flex-col">
 		Jméno
 		<input type="text" bind:value={firstName} class="p-2" on:input={makeUrlSlug} />
