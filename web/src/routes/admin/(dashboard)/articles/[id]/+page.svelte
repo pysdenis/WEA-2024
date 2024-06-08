@@ -113,7 +113,7 @@
 	function closeModal() {
 		showModal = false;
 		selectedArticle = null;
-	}
+	}	
 
 	function makeUrlSlug() {
 		article.urlSlug = article.title.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -127,7 +127,7 @@
 	<h1 class="font-light text-center p-0 my-0 text-4xl">Editace článku</h1>
 </div>
 
-<form on:submit|preventDefault={saveArticle} class="flex flex-col md:grid grid-cols-2 gap-4">
+<form on:submit|preventDefault={saveArticle} class="flex flex-col overflow-y-auto md:grid grid-cols-2 gap-4">
 	<label class="flex flex-col">
 		Název
 		<input type="text" bind:value={article.title} class="p-2" on:input={makeUrlSlug} />
@@ -179,7 +179,11 @@
 		Author
 		<select bind:value={article.authorId} class="p-2">
 			{#each authors as author}
-				<option value={author.id}>{author.firstName + ' ' +  author.lastName}</option>
+				{#if String(article.id) === String(article.authorId)}
+					<option value={author.id} selected>{author.firstName + ' ' +  author.lastName}</option>
+				{:else}
+					<option value={author.id}>{author.firstName + ' ' +  author.lastName}</option>
+				{/if}
 			{/each}
 		</select>
 	</label>

@@ -101,7 +101,7 @@
 	<h1 class="font-light text-center p-0 my-0 text-4xl">Přídání nového článku</h1>
 </div>
 
-<form on:submit|preventDefault={saveArticle} class="flex flex-col md:grid grid-cols-2 gap-4">
+<form on:submit|preventDefault={saveArticle} class="flex overflow-y-auto flex-col md:grid grid-cols-2 gap-4">
 	<label class="flex flex-col">
 		Název
 		<input type="text" bind:value={title} class="p-2" on:input={makeUrlSlug} />

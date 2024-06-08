@@ -5,10 +5,10 @@ class Database {
 	// private $username = "spseipysg6cz";
 	// private $password = "denispys";
 	// private $dbname = "weapysdenis";
-	private $servername = "localhost"; //sql.endora.cz:3307 - for remote database
-	private $username = "root";
-	private $password = "";
-	private $dbname = "id22133666_wea";
+	private $servername = "sql.endora.cz:3307"; //sql.endora.cz:3307 - for remote database
+	private $username = "spseipysg6cz";
+	private $password = "denispys";
+	private $dbname = "weapysdenis";
 
 	public function getConnection() {
 		$this->connection = null;
