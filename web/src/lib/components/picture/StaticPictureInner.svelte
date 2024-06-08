@@ -16,10 +16,6 @@
 	export let preload: boolean | undefined = undefined;
 	export let naturalHeight: number | undefined = undefined;
 	export let naturalWidth: number | undefined = undefined;
-
-	onMount(() => {
-		window.refreshFsLightbox?.();
-	});
 </script>
 
 <svelte:head>
@@ -30,12 +26,10 @@
 	{/if}
 </svelte:head>
 
-<div class={className}>
-	<picture>
-		{#each Object.entries(sourcesets) as [query, image]}
-			<source srcset={`${image} 1x`} type="image/webp" media={parseSourceSet(query)} />
-		{/each}
+<picture>
+	{#each Object.entries(sourcesets) as [query, image]}
+		<source srcset={`${image} 1x`} type="image/webp" media={parseSourceSet(query)} />
+	{/each}
 
-		<img class={imgClass} {alt} src={image} {width} {height} {loading} bind:naturalHeight bind:naturalWidth />
-	</picture>
-</div>
+	<img class={imgClass} {alt} src={image} {width} {height} {loading} bind:naturalHeight bind:naturalWidth />
+</picture>
