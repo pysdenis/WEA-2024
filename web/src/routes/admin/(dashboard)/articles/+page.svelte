@@ -60,8 +60,8 @@
 	{#each articles as article}
 		<div class="grid grid-cols-3 lg:grid-cols-5 p-3">
 			<span>{article.title}</span>
-			<div title={new Date(article.publishedAt) < new Date() ? "Článek je publikován." : "Článek bude publikován, dle zvoleného data."}>
-				<span class="{new Date(article.publishedAt) < new Date() ? "bg-green-200" : "bg-red-200"} p-1">{localizeDate(article.publishedAt)}</span>
+			<div title={new Date(article.publishedAt) <= new Date() ? "Článek je publikován." : "Článek bude publikován, dle zvoleného data."}>
+				<span class="{new Date(article.publishedAt) <= new Date() ? "bg-green-200" : "bg-red-200"} p-1">{localizeDate(article.publishedAt)}</span>
 			</div>
 			<span class="hidden lg:inline-block">{article.categoryName}</span>
 			<span class="hidden lg:inline-block">{article.authorName}</span>
