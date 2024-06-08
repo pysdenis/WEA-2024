@@ -38,6 +38,22 @@ class Author {
 		$this->urlSlug = $row['urlSlug'];
 	}
 
+	public function readSingleBySlug() {
+		$query = "SELECT * FROM " . $this->table_name . " WHERE urlSlug = ?";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bindParam(1, $this->urlSlug);
+		$stmt->execute();
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		$this->id = $row['id'];
+		$this->firstName = $row['firstName'];
+		$this->lastName = $row['lastName'];
+		$this->email = $row['email'];
+		$this->phoneNumber = $row['phoneNumber'];
+		$this->content = $row['content'];
+		$this->image = $row['image'];
+		$this->urlSlug = $row['urlSlug'];
+	}
+
 	public function create() {
 		$query = "INSERT INTO " . $this->table_name . " SET firstName=:firstName, lastName=:lastName, email=:email, phoneNumber=:phoneNumber, content=:content, image=:image, urlSlug=:urlSlug";
 		$stmt = $this->conn->prepare($query);

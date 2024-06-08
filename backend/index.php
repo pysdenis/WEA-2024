@@ -231,19 +231,35 @@ switch($path[0]) {
 		switch($request_method) {
 			case 'GET':
 				if (isset($path[1])) {
-					$author->id = $path[1];
-					$author->readSingle();
-					$author_item = array(
-						"id" => $author->id,
-						"firstName" => $author->firstName,
-						"lastName" => $author->lastName,
-						"email" => $author->email,
-						"phoneNumber" => $author->phoneNumber,
-						"content" => $author->content,
-						"image" => $author->image,
-						"urlSlug" => $author->urlSlug
-					);
-					echo json_encode($author_item);
+					if (is_numeric($path[1])) {
+						$author->id = $path[1];
+						$author->readSingle();
+						$author_item = array(
+							"id" => $author->id,
+							"firstName" => $author->firstName,
+							"lastName" => $author->lastName,
+							"email" => $author->email,
+							"phoneNumber" => $author->phoneNumber,
+							"content" => $author->content,
+							"image" => $author->image,
+							"urlSlug" => $author->urlSlug
+						);
+						echo json_encode($author_item);
+					} else {
+						$author->urlSlug = $path[1];
+						$author->readSingleBySlug();
+						$author_item = array(
+							"id" => $author->id,
+							"firstName" => $author->firstName,
+							"lastName" => $author->lastName,
+							"email" => $author->email,
+							"phoneNumber" => $author->phoneNumber,
+							"content" => $author->content,
+							"image" => $author->image,
+							"urlSlug" => $author->urlSlug
+						);
+						echo json_encode($author_item);
+					}
 				} else {
 					$stmt = $author->read();
 					$authors_arr = array();
@@ -302,6 +318,41 @@ switch($path[0]) {
 				http_response_code(405);
 				echo json_encode(array("message" => "Method not allowed."));
 				break;
+		}
+		break;
+	case 'author-articles':
+		if ($request_method === 'GET') {
+			if (isset($path[1])) {
+				$author->urlSlug = $path[1];
+				$author->readSingleBySlug();
+				$stmt = $article->readAllByAuthor($author->id);
+				$articles_arr = array();
+				while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+					extract($row);
+					$article_item = array(
+						"id" => $id,
+						"title" => $title,
+						"createdAt" => $createdAt,
+						"publishedAt" => $publishedAt,
+						"categoryName" => $categoryName,
+						"authorName" => $authorName,
+						"categoryId" => $categoryId,
+						"authorId" => $authorId,
+						"image" => $image,
+						"content" => $content,
+						"perex" => $perex,
+						"urlSlug" => $urlSlug
+					);
+					array_push($articles_arr, $article_item);
+				}
+				echo json_encode($articles_arr);
+			} else {
+				http_response_code(400);
+				echo json_encode(array("message" => "Missing author URL slug."));
+			}
+		} else {
+			http_response_code(405);
+			echo json_encode(array("message" => "Method not allowed."));
 		}
 		break;
 	case 'users_admin':

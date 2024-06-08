@@ -46,6 +46,33 @@ class Article {
 		return $stmt;
 	}
 
+	public function readAllByAuthor($authorId) {
+		$query = "SELECT
+					a.id,
+					a.title,
+					a.createdAt,
+					a.publishedAt,
+					c.name AS categoryName,
+					CONCAT(u.firstName, ' ', u.lastName) AS authorName,
+					a.image,
+					a.categoryId,
+					a.authorId,
+					a.content,
+					a.perex,
+					a.urlSlug
+				FROM
+					" . $this->table_name . " a
+				LEFT JOIN
+					categories c ON a.categoryId = c.id
+				LEFT JOIN
+					authors u ON a.authorId = u.id
+				WHERE a.authorId = ?";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bindParam(1, $authorId);
+		$stmt->execute();
+		return $stmt;
+	}
+
 	public function readSingle() {
 		$query = "SELECT
 					a.id,

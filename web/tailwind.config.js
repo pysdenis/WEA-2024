@@ -52,12 +52,13 @@ export default {
 				page: 'inset 0 9rem 9rem -5.5rem #f1f8fa'
 			},
 			backgroundImage: {
-				main: 'linear-gradient(#ffc619, #ff9a19);'
+				main: 'linear-gradient(#ffc619, #ff9a19);',
+				"gradient-dark": "linear-gradient(50deg, #3543c6, #0f0f0f 50%, #8d00fc)",
 			},
 			screens: {
 				'2xl': '1558px'
-			}
-		}
+			},
+		},
 	},
 	plugins: []
 };

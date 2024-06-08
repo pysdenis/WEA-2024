@@ -9,6 +9,11 @@ export async function fetchArticles(id?: number | string): Promise< Article | Ar
 	return fetchData<Article | Article[]>(endpoint, id);
 }
 
+export async function fetchArticlesByAuthor(id: string): Promise<Article | Article[]> {
+	const endpoint: string = 'author-articles';
+	return fetchData<Article | Article[]>(endpoint, id);
+}
+
 export async function fetchArticlesByCategory(id?: number | string): Promise<Article | Article[]> {
 	const endpoint: string = 'articlesByCategory';
 	return fetchData<Article | Article[]>(endpoint, id);
