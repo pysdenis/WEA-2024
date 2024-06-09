@@ -17,8 +17,8 @@
 			{/if}
 		</div>
 		<div class="p-1 col-span-2 flex flex-col gap-1 h-full w-full">
-			<h2 class="text-base m-0 font-bold text-primary">{article.title}</h2>
-			<span class="text-gray-500 text-2xs">{article.authorName}</span>
+			<h2 class="text-2xs m-0 font-bold text-primary">{article.title}</h2>
+			<span class="text-gray-500 text-3xs">{article.authorName}</span>
 		</div>
 	</a>
 {/if}

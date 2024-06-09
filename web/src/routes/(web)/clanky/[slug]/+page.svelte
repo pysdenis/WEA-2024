@@ -12,16 +12,13 @@
 	export let data: { article: Article };
 
 	let article: Article = data.article;
-
-	let articles: Article[] = [];
 	let recommendedArticles: Article[] = [];
 
 	let slug: string;
 
 	const loadNewArticle = async () => {
-		const articlesResponse = await fetchArticles();
-		articles = articlesResponse as Article[];
-		recommendedArticles = articles.reverse().slice(0, 3);
+		const articlesResponse = await fetchArticles() as Article[];
+		recommendedArticles = articlesResponse.filter(a => a.id !== article.id).reverse().slice(0, 4);
 
 		const response = await fetchArticles(slug);
 		article = response as Article;
@@ -39,8 +36,13 @@
 			loadNewArticle();
 		}
 	});
-
 </script>
+
+<svelte:head>
+	<title>{article.title} | THE CAP</title>
+	<meta name="description" content="{article.content}">
+	<meta name="keywords" content="{article.title}">
+</svelte:head>
 
 <section class="flex container flex-col gap-8 lg:flex-row">
 	<article class="lg:w-3/4">

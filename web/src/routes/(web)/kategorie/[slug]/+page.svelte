@@ -38,6 +38,12 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{category.name} | THE CAP</title>
+	<meta name="description" content="{category.content}">
+	<meta name="keywords" content="{category.name}">
+</svelte:head>
+
 {#if category.image}
 	<StaticPicture image="{BASE_URL}{category.image}" alt={category.name} width={1140} height={0} imgClass="object-cover w-full" class="w-full max-h-56 overflow-hidden" />
 {/if}

@@ -19,6 +19,12 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{author.firstName} | THE CAP</title>
+	<meta name="description" content="{author.content}">
+	<meta name="keywords" content="{author.firstName + author.lastName}">
+</svelte:head>
+
 <section class="container mt-14 flex flex-col items-center gap-10">
 	<div class="flex md:flex-row flex-col items-center md:gap-6">
 		<h1 class="text-center">{author.firstName}</h1>

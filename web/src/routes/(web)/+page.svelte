@@ -14,7 +14,10 @@
 
 <svelte:head>
 	<title>THE CAP</title>
+	<meta name="description" content="THE CAP je web plný zábavných memů a vtipů. Připojte se k nám a užijte si nejnovější trendy ze světa meme kultury.">
+	<meta name="keywords" content="memy, vtipy, zábava, humor, internetová kultura, trendy, sociální média">
 </svelte:head>
+
 <div class="w-full flex flex-col items-center mb-8 lg:mb-16 justify-center h-56 bg-gradient-dark text-white">
 	<h1 class="sm:text-5xl text-2xl">For the meme culture</h1>
 </div>
