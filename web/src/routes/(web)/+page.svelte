@@ -7,19 +7,19 @@
 	let articles: Article[] = [];
 
 	onMount(async () => {
-		const response = await fetchArticles();
-		articles = response as Article[];
+		const response = await fetchArticles() as Article[];
+		articles = response.filter(article => new Date(article.publishedAt) <= new Date()).reverse().splice(0, 6);
 	});
 </script>
 
 <svelte:head>
 	<title>THE CAP</title>
 </svelte:head>
-<section class="w-full flex flex-col items-center justify-center h-56 bg-gradient-dark text-white">
-	<h1 class="text-5xl">For the meme culture</h1>
-</section>
+<div class="w-full flex flex-col items-center mb-8 lg:mb-16 justify-center h-56 bg-gradient-dark text-white">
+	<h1 class="sm:text-5xl text-2xl">For the meme culture</h1>
+</div>
 <section class="container">
-	<h2 class="text-center">Články</h2>
+	<h2 class="text-center">Nejnovější Články</h2>
 	<div class="grid grid-cols-1 mt-12 md:grid-cols-2 lg:grid-cols-3 gap-8">
 		{#if articles.length === 0}
 			<p class="text-center">Žádné články</p>

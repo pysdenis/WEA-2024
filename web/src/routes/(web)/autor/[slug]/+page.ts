@@ -10,7 +10,7 @@ export const load: PageLoad = async ({ params }) => {
 	const response = await fetchAuthors(params.slug);
 	author = response as Author;
 
-	if (!author) {
+	if (!author || author.firstName === null) {
 		error(404, 'Not found');
 	}
 

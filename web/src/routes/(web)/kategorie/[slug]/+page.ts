@@ -10,7 +10,7 @@ export const load: PageLoad = async ({ params }) => {
 	const response = await fetchCategories(params.slug);
 	category = response as Category;
 
-	if (!category) {
+	if (!category || category.name === null) {
 		error(404, 'Not found');
 	}
 

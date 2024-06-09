@@ -42,12 +42,12 @@ p {
 }
 
 a {
-	@apply font-poppins;
+	@apply font-poppins hover:text-accent duration-300 transition-all;
 }
 
 section,
 .section {
-	@apply mb-10 lg:mb-[3.75rem];
+	@apply mb-20 lg:mb-[6.75rem];
 }
 
 /*

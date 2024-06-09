@@ -10,7 +10,7 @@ export const load: PageLoad = async ({ params }) => {
 	const response = await fetchArticles(params.slug);
 	article = response as Article;
 
-	if (!article) {
+	if (!article || (new Date(article.publishedAt) > new Date()) || article.title === null) {
 		error(404, 'Not found');
 	}
 

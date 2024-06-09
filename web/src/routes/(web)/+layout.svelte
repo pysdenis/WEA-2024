@@ -1,12 +1,17 @@
 <script lang="ts">
+	import Icon from './../../lib/components/Icon.svelte';
 	import '$lib/assets/css/main.css';
 	import logo from '$lib/assets/images/logo.png';
 	import { fetchCategories } from '$lib/api/fetchFromDatabase';
 	import { onMount } from 'svelte';
 	import type Category from '$lib/types/Category';
+	import menu from '$lib/assets/icons/menu.svg?raw';
+	import cross from '$lib/assets/icons/cross.svg?raw';
+	import Header from '../../lib/components/Header.svelte';
 
 	let categories: Category[] = [];
 	let showOthers = false;
+	let windowScrollY = 0;
 
 	onMount(async () => {
 		const response = await fetchCategories();
@@ -14,37 +19,45 @@
 	});
 </script>
 
-<header class="flex py-4 bg-primary">
-	<div class="container flex items-center justify-between gap-12">
-		<div class="flex h-14 w-14">
-			<a href="/">
-				<img src={logo} height={56} width={56} alt="Logo THE CAP" />
-			</a>
-		</div>
-		<nav class="text-white h-full flex items-center gap-8 uppercase">
-			{#each categories.slice(0, 5) as category}
-				<span class="flex justify-end items-center">
-					<a class="flex" href={`/kategorie/${category.urlSlug}`}>{category.name}</a>
-				</span>
-			{/each}
-			{#if categories.length > 5}
-				<span class="flex justify-end items-center relative">
-					<button type="button" on:click={() => showOthers = !showOthers} class="flex uppercase cursor-pointer">Další kategorie</button>
-					<div role="menu" tabindex="0" class="hidden absolute right-0 top-5 mt-2 py-2 w-48 bg-white rounded-md shadow-lg" class:!block={showOthers} on:mouseenter={() => {setTimeout(() => {showOthers = false}, 300)}} on:mouseleave={() => {showOthers = true}}>
-						{#each categories.slice(5) as category}
-							<a href={`/kategorie/${category.urlSlug}`} class="block px-4 py-2 text-sm text-gray-700 duration-300 hover:bg-gray-100">{category.name}</a>
-						{/each}
-					</div>
-				</span>
-			{/if}
-		</nav>
-	</div>
-</header>
-<main class="min-h-[88dvh]">
+
+
+<Header {categories} />
+
+<main class="min-h-[88dvh] mt-24">
 	<slot />
 </main>
 <footer class="flex items-center justify-center bg-secondary">
-	<div class="container">
-		<p class="text-text text-center">Denis Pyš | © 2024 | The Cap</p>
+	<div class="container py-11 mb-5">
+		<div class="lg:grid flex flex-col gap-6 lg:gap-12 lg:grid-cols-3">
+			<div class="flex items-center gap-3 text-white">
+				<a href="/">
+					<img src={logo} height={70} width={70} alt="Logo THE CAP" />
+				</a>
+				<span class="text-xs">- For the meme culture</span>
+			</div>
+			<div class="flex flex-col gap-2">
+				<h3 class="text-white text-2xl font-bold uppercase m-0 mb-1">Kontakt</h3>
+				<p class="text-white">Telefon:
+					<a href="tel:+420123456789">
+						+420 123 456 789
+					</a>
+				</p>
+				<p class="text-white">Email:
+					<a href="mailto:info@thecap.cz">
+						info@thecap.cz
+					</a>
+				</p>
+			</div>
+			<div class="flex flex-col gap-2">
+				<h3 class="text-white text-2xl font-bold uppercase m-0 mb-1">Odkazy</h3>
+				<div class="grid grid-cols-2 gap-2">
+					{#each categories as category}
+						<span class="flex">
+							<a class="text-white" href={`/kategorie/${category.urlSlug}`}>{category.name}</a>
+						</span>
+					{/each}
+				</div>
+			</div>
+		</div>
 	</div>
 </footer>

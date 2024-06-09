@@ -14,12 +14,10 @@
 </script>
 
 {#if new Date(article.publishedAt) <= date}
-	<div class="bg-white shadow-md hover:scale-105 duration-300 overflow-hidden relative">
+	<a href="/clanky/{article.urlSlug}" class="bg-white shadow-md group hover:scale-105 duration-300 overflow-hidden relative">
 		<span class="absolute bg-primary text-2xs text-white py-1 px-2 right-0">{localizeDate(article.publishedAt)}</span>
 		{#if article.image}
-			<a href="/clanky/{article.urlSlug}">
-				<StaticPicture image="{BASE_URL}{article.image}" alt={article.title} width={1140} height={0} imgClass="object-cover h-full w-full" class="w-full h-44 overflow-hidden" />
-			</a>
+			<StaticPicture image="{BASE_URL}{article.image}" alt={article.title} width={1140} height={0} imgClass="object-cover h-full w-full" class="w-full h-44 overflow-hidden" />
 		{/if}
 		<div class="p-4 grid gap-2 grid-rows-3">
 			<span>
@@ -28,7 +26,7 @@
 				</a>
 				<span class="text-gray-500 text-2xs">{article.authorName}</span>
 			</span>
-			<p class="row-span-2 text-2xs">{shortenText(article.perex)}</p>
+			<p class="row-span-2 text-2xs text-black">{shortenText(article.perex)}</p>
 		</div>
-	</div>
+	</a>
 {/if}

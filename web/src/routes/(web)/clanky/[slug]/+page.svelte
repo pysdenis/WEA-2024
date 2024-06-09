@@ -3,9 +3,11 @@
 	import { BASE_URL } from '$lib/api/api';
 	import StaticPicture from '$lib/components/picture/StaticPicture.svelte';
 	import { localizeDate } from '$lib/scripts/date';
-	import { onMount } from 'svelte';
+	import { beforeUpdate, onMount } from 'svelte';
 	import { fetchArticles } from '../../../../lib/api/fetchFromDatabase';
 	import SmallArticleCard from '../../../../lib/components/SmallArticleCard.svelte';
+	import { page } from '$app/stores';
+	import { get } from 'svelte/store';
 
 	export let data: { article: Article };
 
@@ -14,10 +16,28 @@
 	let articles: Article[] = [];
 	let recommendedArticles: Article[] = [];
 
-	onMount(async () => {
+	let slug: string;
+
+	const loadNewArticle = async () => {
 		const articlesResponse = await fetchArticles();
 		articles = articlesResponse as Article[];
 		recommendedArticles = articles.reverse().slice(0, 3);
+
+		const response = await fetchArticles(slug);
+		article = response as Article;
+	};
+
+	onMount(async () => {
+		slug = get(page).params.slug;
+		loadNewArticle();
+	});
+
+	beforeUpdate(() => {
+		const newSlug = get(page).params.slug;
+		if (newSlug !== slug) {
+			slug = newSlug;
+			loadNewArticle();
+		}
 	});
 
 </script>
@@ -26,12 +46,8 @@
 	<article class="lg:w-3/4">
 		<h1>{article.title}</h1>
 		<StaticPicture image="{BASE_URL}{article.image}" alt={article.title} width={1140} height={0} imgClass="object-cover w-full" class="w-full" />
-		<div class="flex justify-between text-3xs md:text-2xs">
+		<div class="flex justify-start text-3xs md:text-2xs">
 			<span>Publikováno: {localizeDate(article.publishedAt)}</span>
-			<span>
-				<span>Autor:</span>
-				<a href="/autor/{article.authorUrlSlug}">{article.authorName}</a>
-			</span>
 		</div>
 		<p class="mt-2 leading-7 text-justify md:text-md">{article.content}</p>
 	</article>
