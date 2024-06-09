@@ -1,5 +1,5 @@
 # WEA-2024 I3B-S2
-Závěrečný úkol do webovek Denis + (Šimon, Vojta)
+Závěrečný úkol do webovek
 
 ## Zadání
 1) Navrhněte a realizujte webovou aplikaci na vlastní téma, z vám blízké oblasti (koníček, dlouhodobý zájem, sport, ...).
