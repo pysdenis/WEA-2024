@@ -35,17 +35,20 @@
 			</a>
 		</div>
 		<nav class="text-white hidden h-full lg:flex items-center gap-8 uppercase">
-			{#each categories.slice(0, 5) as category}
+			<span class="flex justify-end items-center">
+				<a class="flex text-md" href="/">Domů</a>
+			</span>
+			{#each categories.slice(0, 4) as category}
 				<span class="flex justify-end items-center">
 					<a class="flex text-md" href={`/kategorie/${category.urlSlug}`}>{category.name}</a>
 				</span>
 			{/each}
-			{#if categories.length > 5}
+			{#if categories.length > 4}
 				<span class="flex justify-end items-center relative">
 					<button type="button" on:click={() => showOthers = !showOthers} class="flex uppercase text-md hover:text-accent duration-300 transition-all cursor-pointer">Další kategorie</button>
 					<button type="button" class:hidden={!showOthers} class="fixed inset-0 z-10 h-full w-full cursor-default" tabindex="-1" on:click={() => showOthers = !showOthers}></button>
 					<div role="menu" tabindex="0" class="hidden absolute right-0 top-8 mt-2 z-20 py-2 w-48 left-1/2 -translate-x-1/2 bg-white shadow-md" class:!block={showOthers}>
-						{#each categories.slice(5) as category}
+						{#each categories.slice(4) as category}
 							<a href={`/kategorie/${category.urlSlug}`} class="block px-4 py-2 text-sm text-gray-700 duration-300 hover:bg-gray-100">{category.name}</a>
 						{/each}
 					</div>

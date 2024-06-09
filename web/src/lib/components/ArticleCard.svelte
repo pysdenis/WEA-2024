@@ -19,14 +19,14 @@
 		{#if article.image}
 			<StaticPicture image="{BASE_URL}{article.image}" loading="eager" alt={article.title} width={1140} height={0} imgClass="object-cover h-full w-full" class="w-full h-44 overflow-hidden" />
 		{/if}
-		<div class="p-4 grid gap-2 grid-rows-3">
+		<div class="p-4">
 			<span>
 				<a href="/clanky/{article.urlSlug}">
-					<h2 class="text-xl m-0 font-bold text-primary">{article.title}</h2>
+					<h2 class="md:text-lg text-md m-0 font-bold text-primary">{article.title}</h2>
 				</a>
 				<span class="text-gray-500 text-2xs">{article.authorName}</span>
 			</span>
-			<p class="row-span-2 text-2xs text-black">{shortenText(article.perex)}</p>
+			<p class="text-2xs mt-2 text-black">{shortenText(article.perex)}</p>
 		</div>
 	</a>
 {/if}
