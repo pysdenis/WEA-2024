@@ -106,7 +106,7 @@
 	}
 
 	function makeUrlSlug() {
-		category.urlSlug = category.name.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+		category.urlSlug = category.name.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 	}
 </script>
 

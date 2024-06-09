@@ -113,10 +113,10 @@
 	function closeModal() {
 		showModal = false;
 		selectedArticle = null;
-	}	
+	}
 
 	function makeUrlSlug() {
-		article.urlSlug = article.title.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+		article.urlSlug = article.title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 	}
 </script>
 

@@ -87,7 +87,7 @@
 
 	function makeUrlSlug() {
 		const randomValue = Math.floor(Math.random() * 10000);
-		urlSlug = (randomValue + firstName + lastName).toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+		urlSlug = (randomValue + firstName + lastName).toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 	}
 </script>
 

@@ -90,7 +90,7 @@
 	}
 
 	function makeUrlSlug() {
-		urlSlug = title.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+		urlSlug = title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 	}
 </script>
 
