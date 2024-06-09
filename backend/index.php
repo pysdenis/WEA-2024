@@ -478,7 +478,7 @@ switch($path[0]) {
 				$fileNameCmps = explode(".", $fileName);
 				$fileExtension = strtolower(end($fileNameCmps));
 
-				$allowedfileExtensions = array('jpg', 'gif', 'png', 'webp');
+				$allowedfileExtensions = array('jpg', 'gif', 'png', 'webp', 'jpeg');
 				if (in_array($fileExtension, $allowedfileExtensions)) {
 					$uploadFileDir = './upload_images/';
 					$dest_path = $uploadFileDir . $fileName;
