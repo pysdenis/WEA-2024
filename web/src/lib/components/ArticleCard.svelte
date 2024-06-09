@@ -17,7 +17,7 @@
 	<a href="/clanky/{article.urlSlug}" class="bg-white shadow-md group hover:scale-105 duration-300 overflow-hidden relative">
 		<span class="absolute bg-primary text-2xs text-white py-1 px-2 right-0">{localizeDate(article.publishedAt)}</span>
 		{#if article.image}
-			<StaticPicture image="{BASE_URL}{article.image}" alt={article.title} width={1140} height={0} imgClass="object-cover h-full w-full" class="w-full h-44 overflow-hidden" />
+			<StaticPicture image="{BASE_URL}{article.image}" loading="eager" alt={article.title} width={1140} height={0} imgClass="object-cover h-full w-full" class="w-full h-44 overflow-hidden" />
 		{/if}
 		<div class="p-4 grid gap-2 grid-rows-3">
 			<span>
