@@ -49,7 +49,7 @@
 			const response = await postArticle({ title, content, urlSlug, categoryId, authorId, publishedAt, createdAt, perex, image });
 			if (response.ok) {
 				showLogger = true;
-				loggerMsg = "Kategorie byla úspěšně vytvořena.";
+				loggerMsg = "Článek byla úspěšně vytvořena.";
 				type = 'success';
 				setTimeout(() => window.location.assign("/admin/articles"), 2000);
 			} else {
