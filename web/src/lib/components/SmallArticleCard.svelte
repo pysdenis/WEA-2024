@@ -9,11 +9,11 @@
 </script>
 
 {#if new Date(article.publishedAt) <= date}
-	<a href="/clanky/{article.urlSlug}" class="bg-white grid grid-cols-3 h-16 shadow-md hover:scale-105 duration-300 overflow-hidden relative">
+	<a href="/clanky/{article.urlSlug}" class="bg-white grid grid-cols-3 min-h-16 shadow-md hover:scale-105 duration-300 overflow-hidden relative">
 		<div class="h-full">
 			<span class="absolute bg-primary text-3xs text-white px-1 left-0">{localizeDate(article.publishedAt)}</span>
 			{#if article.image}
-				<StaticPicture image="{BASE_URL}{article.image}" alt={article.title} width={480} height={0} imgClass="object-cover h-full w-full" class="h-16 w-full overflow-hidden" />
+				<StaticPicture image="{BASE_URL}{article.image}" alt={article.title} width={480} height={0} imgClass="object-cover object-center h-full w-full" class="h-full w-full overflow-hidden" />
 			{/if}
 		</div>
 		<div class="p-1 col-span-2 flex flex-col gap-1 h-full w-full">
