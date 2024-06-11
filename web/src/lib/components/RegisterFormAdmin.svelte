@@ -89,7 +89,7 @@
 						<input type="password" bind:value={loginPassword} class="p-2" />
 					{/if}
 				</div>
-				<span class="text-3xs">(Heslo musí obsahovat velké písmeno a číslici)</span>
+				<span class="text-3xs">*(Velké, malé písmeno a číslice)</span>
 			</label>
 			<label class="flex flex-col">
 				Heslo znovu
