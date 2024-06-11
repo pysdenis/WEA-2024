@@ -81,7 +81,7 @@
 				<input type="text" bind:value={loginName} class="p-2" />
 			</label>
 			<label class="flex flex-col">
-				<span>Heslo<span class="text-3xs">(Heslo musí obsahovat velké písmeno a číslici)</span></span>
+				<span>Heslo</span>
 				<div class="relative">
 					{#if showPassword}
 						<input type="text" bind:value={loginPassword} class="p-2" />
@@ -89,6 +89,7 @@
 						<input type="password" bind:value={loginPassword} class="p-2" />
 					{/if}
 				</div>
+				<span class="text-3xs">(Heslo musí obsahovat velké písmeno a číslici)</span>
 			</label>
 			<label class="flex flex-col">
 				Heslo znovu
