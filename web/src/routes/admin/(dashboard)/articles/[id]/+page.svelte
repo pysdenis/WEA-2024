@@ -55,7 +55,7 @@
 				setTimeout(() => window.location.assign("/admin/articles"), 2000);
 			} else {
 				showLogger = true;
-				loggerMsg = `Název, urlSlug musí být unikátní - ${response.message}`;
+				loggerMsg = `Název, urlSlug musí být unikátní a všechna pole musí být vyplňena - ${response.message}`;
 				type = 'error';
 			}
 		} catch (error) {

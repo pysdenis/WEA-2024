@@ -49,12 +49,12 @@
 			const response = await postArticle({ title, content, urlSlug, categoryId, authorId, publishedAt, createdAt, perex, image });
 			if (response.ok) {
 				showLogger = true;
-				loggerMsg = "Článek byl úspěšně vytvořena.";
+				loggerMsg = "Článek byl úspěšně vytvořen.";
 				type = 'success';
 				setTimeout(() => window.location.assign("/admin/articles"), 2000);
 			} else {
 				showLogger = true;
-				loggerMsg = `Název a urlSlug musí být unikátní - ${response.message}`;
+				loggerMsg = `Název a urlSlug musí být unikátní a všechna pole musí být vyplňena - ${response.message}`;
 				type = 'error';
 			}
 		} catch (error) {

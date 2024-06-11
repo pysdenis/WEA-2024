@@ -57,7 +57,7 @@
 				setTimeout(() => window.location.assign("/admin/authors"), 2000);
 			} else {
 				showLogger = true;
-				loggerMsg = `Email a urlSlug musí být unikátní - ${response.message}`;
+				loggerMsg = `Email a urlSlug musí být unikátní a všechna pole musí být vyplňena - ${response.message}`;
 				type = 'error';
 			}
 		} catch (error) {

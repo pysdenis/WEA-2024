@@ -59,7 +59,7 @@
 				setTimeout(() => window.location.assign("/admin/categories"), 2000);
 			} else {
 				showLogger = true;
-				loggerMsg = `Název a urlSlug musí být unikátní - ${response.message}`;
+				loggerMsg = `Název a urlSlug musí být unikátní a všechna pole musí být vyplňena - ${response.message}`;
 				type = 'error';
 			}
 		} catch (error) {
