@@ -43,6 +43,13 @@
 			return;
 		}
 
+		if (author.image === null) {
+			showLogger = true;
+			loggerMsg = "Obrázek nesmí být prázdný.";
+			type = 'error';
+			return;
+		}
+
 		try {
 			const response = await putAuthor(author);
 			if (response.ok) {

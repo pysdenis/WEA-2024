@@ -36,6 +36,20 @@
 			return;
 		}
 
+		if (category.content === "") {
+			showLogger = true;
+			loggerMsg = "Text kategorie nesmí být prázdný.";
+			type = 'error';
+			return;
+		}
+
+		if (category.image === null) {
+			showLogger = true;
+			loggerMsg = "Obrázek kategorie nesmí být prázdný.";
+			type = 'error';
+			return;
+		}
+
 		try {
 			const response = await putCategory(category);
 			if (response.ok) {

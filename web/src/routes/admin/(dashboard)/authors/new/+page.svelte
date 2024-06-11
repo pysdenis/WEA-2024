@@ -41,6 +41,13 @@
 			return;
 		}
 
+		if (image === null) {
+			showLogger = true;
+			loggerMsg = "Obrázek nesmí být prázdný.";
+			type = 'error';
+			return;
+		}
+
 		try {
 			const response = await postAuthor({ firstName, lastName, email, phoneNumber, content, urlSlug, image });
 			if (response.ok) {

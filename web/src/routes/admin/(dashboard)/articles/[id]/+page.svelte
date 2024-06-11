@@ -36,7 +36,7 @@
 	});
 
 	async function saveArticle() {
-		if (!article.title || !article.urlSlug || !article.publishedAt || !article.content || !article.categoryId || !article.authorId) {
+		if (!article.title || !article.urlSlug || !article.publishedAt || !article.content || !article.categoryId || !article.authorId || !article.image) {
 			showLogger = true;
 			loggerMsg = "Všechna pole musí být vyplněna.";
 			type = 'error';

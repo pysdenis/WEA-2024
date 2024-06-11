@@ -32,6 +32,20 @@
 			return;
 		}
 
+		if (content === "") {
+			showLogger = true;
+			loggerMsg = "Text kategorie nesmí být prázdný.";
+			type = 'error';
+			return;
+		}
+
+		if (image === null) {
+			showLogger = true;
+			loggerMsg = "Obrázek kategorie nesmí být prázdný.";
+			type = 'error';
+			return;
+		}
+
 		try {
 			const response = await postCategory({ name, content, urlSlug, image, inMenu });
 			if (response.ok) {
